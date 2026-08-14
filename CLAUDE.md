@@ -12,7 +12,12 @@ A zero-shot (inference only, no training) ROBOTIC-EXECUTION benchmark that asks 
 Measurement / consolidation contribution: a NEW distribution, not a new protocol or metric. The cross-family closed-loop protocol and the World-Advantage-Score idea are credited to prior work (World-in-World, WorldArena, V-JEPA-2-AC, the L0-L7 evaluation ladder). See `plan/plan_rejections_risks.md` for the full competitive scan.
 
 ## Repo layout
-- `plan/` - planning docs: engineering plan, dataset plan, rejection-risk + scoop tables, novelty scans, and the proposal reference.
+| 🗂️ Path | 📌 What |
+|---|---|
+| `plan/v2/` | 📊 **CURRENT**: live frontier-brain board (`README.md` spec, `plan_PIVOT_live_frontier.md` deep dive) |
+| `plan/v1/` | 🤖 pre-pivot world-model reproduction (`README.md` spec) |
+| `plan/plan_dataset.md` · `plan/plan_rejections_risks.md` | 🔗 shared ref: 📦 dataset menu; 🩸 novelty / scoop ledger |
+| `plan/v0_proposal/` · `plan/legacy/` | 📄 original proposal + dashboard; 🗄️ retired full vision |
 
 ## Working conventions (follow these)
 - NO em-dashes anywhere (use hyphens, or rewrite the sentence).

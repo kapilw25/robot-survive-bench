@@ -8,7 +8,7 @@
 > - 📏 **WAS** = a rename of existing embodied-utility gain (World-in-World, DreamZero "2x", L0-L7 ladder); the cross-family closed-loop comparison already exists ([V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines, [WorldArena](https://arxiv.org/abs/2602.08971)); capability-slicing, calibration, and the unified harness are each taken (RoboWM-Bench, TD-Calibration, RoboDojo XPolicyLab).
 > - ✅ **Honest deliverable:** the benchmark paper is a neutral **WAS assessment** (credit priors) + a small **3-model zero-shot table (π0-FAST / V-JEPA-2-AC / DreamZero) on one shared DROID/Franka arm**, claimed as measurement/consolidation, not novelty.
 >
-> 📦 **Scope note:** this file is the aspirational full-benchmark reference (Phase-2+); the near-term work is the 3-model DROID/Franka reproduction below.
+> 📦 **Scope note:** this file is the aspirational full-benchmark reference (Phase-2+); the near-term work is the 3-model DROID/Franka reproduction below. 👉 **To BUILD now, follow `../v2/README.md` (concise, actionable). This file is reference, not a build guide.**
 >
 > 🧭 **Design principles (unchanged, still sound):** (I) capability before architecture; (II) closed-loop evaluation (prediction ≠ behaviour); (III) behavioural burden of proof (prediction → better decisions → better outcomes).
 >

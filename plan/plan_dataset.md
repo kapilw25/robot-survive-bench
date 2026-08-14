@@ -4,7 +4,7 @@
 >
 > ⛔ **REALITY CORRECTION (2026-08-12, see `plan_rejections_risks.md`).** Stripped to zero-shot no-training, the original ACTION-ATLAS / DenseWorld plan does not hold: 🌌 **WFM (Cosmos) cannot act zero-shot** (video-only, [WorldBench](https://world-bench.github.io/)) so it is **3 families** not 4; 🗺️ **DenseWorld driving-nav is NOT zero-shot** (no family drives without a trained nav head + photoreal recon), retired to the Phase-3 reference below. The **converged feasible design** runs the 3 frozen families on **one shared DROID/Franka arm** with **observation-space OOD** (transparent / clutter). The diversion table gives the one-glance "why".
 
-## 🎓 Why we diverge from the proposal (`p2_ACTION_ATLAS_ARXIV.md`) - one-glance answer for the professor
+## 🎓 Why we diverge from the proposal (`v0_proposal/p2_ACTION_ATLAS_ARXIV.md`) - one-glance answer for the professor
 
 | 🔀 | 📄 Proposal (ACTION-ATLAS / DenseWorld) said | 🔍 What the novelty-hunt + feasibility audit found (ELI5) | ✅ What we do instead |
 |---|---|---|---|

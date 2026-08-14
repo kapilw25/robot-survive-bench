@@ -23,4 +23,7 @@ Zoom into every box (root/title, branches, sub-labels, cells): no text past a bo
 ## 6. No hallucination
 Every fact / number / cite is real and recorded. Unlogged counts are marked "not logged", never invented.
 
-Verdict: MATCH only if 1 through 6 all pass; otherwise PARTIAL naming the exact failing element. Append every confirmed miss to `misses.jsonl`.
+## 7. Working-doc house style (produced markdown under `plan/` or `.claude/`, never a published `.tex`)
+Scan the PRODUCED file's own rows, do not trust the soft PreToolUse reminder was honoured. Every table row and header (a `^\|` line that is not the `|---|` separator) carries a colourful emoji marker; a 3+ item / 2+ dimension comparison is a table, not a wall-of-text paragraph; a paper / URL reference cell is a clickable link. A row with zero emoji is a HOUSE-STYLE-VIOLATION even when the content is right. Generalise: any formatting invariant that exists only as a soft reminder must be verified against the artifact itself. Edit-time companions: `table_row_emoji.md`, `tables_over_prose.md`.
+
+Verdict: MATCH only if 1 through 7 all pass; otherwise PARTIAL naming the exact failing element. Append every confirmed miss to `misses.jsonl`.

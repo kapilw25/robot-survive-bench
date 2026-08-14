@@ -24,4 +24,13 @@ Behavioural Task Success Rate (TSR). Headline: `dWAS = WAS(OOD) - WAS(normal)` =
 
 ## Status
 
-Planning stage. See `plan/` for the engineering plan, dataset plan, and the competitive / rejection-risk analysis.
+🟡 Planning stage. Plan structure:
+
+| 🗂️ Path | 📌 What | 🔖 Status |
+|---|---|---|
+| [`plan/v2/`](plan/v2/README.md) | 📊 live frontier-brain robot-execution board | ✅ CURRENT |
+| [`plan/v1/`](plan/v1/README.md) | 🤖 pre-pivot world-model reproduction | 📌 baselines |
+| [`plan/plan_dataset.md`](plan/plan_dataset.md) | 📦 dataset menu | 🔗 shared ref |
+| [`plan/plan_rejections_risks.md`](plan/plan_rejections_risks.md) | 🩸 novelty / scoop ledger | 🔗 shared ref |
+| [`plan/v0_proposal/`](plan/v0_proposal/) | 📄 original ACTION-ATLAS proposal + gap dashboard | 🕰️ v0 |
+| [`plan/legacy/`](plan/legacy/plan_engineering.md) | 🗺️ retired full-benchmark vision | 🗄️ archive |
