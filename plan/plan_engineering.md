@@ -6,9 +6,9 @@
 > - 🌌 **WFM (Cosmos) cannot act zero-shot** (video-only): the "4-family" γ matrix is really **3 families** (⚡ VLA, 🧠 LWM, 🎬 WAM).
 > - 🗺️ **DenseWorld zero-shot nav is infeasible** (no family drives without a trained action head + photoreal recon): it is a training-heavy Phase-3, NOT zero-shot execution.
 > - 📏 **WAS** = a rename of existing embodied-utility gain (World-in-World, DreamZero "2x", L0-L7 ladder); the cross-family closed-loop comparison already exists ([V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines, [WorldArena](https://arxiv.org/abs/2602.08971)); capability-slicing, calibration, and the unified harness are each taken (RoboWM-Bench, TD-Calibration, RoboDojo XPolicyLab).
-> - ✅ **Honest deliverable:** fold into Paper-1 (survey) as a neutral **WAS assessment** (credit priors) + a small **3-model zero-shot table (π0-FAST / V-JEPA-2-AC / DreamZero) on one shared DROID/Franka arm**, claimed as measurement/consolidation, not novelty.
+> - ✅ **Honest deliverable:** the benchmark paper is a neutral **WAS assessment** (credit priors) + a small **3-model zero-shot table (π0-FAST / V-JEPA-2-AC / DreamZero) on one shared DROID/Franka arm**, claimed as measurement/consolidation, not novelty.
 >
-> 📦 **Scope note:** this file belongs to the ACTION-ATLAS benchmark paper, now retired to a Phase-2+ reference; the near-term work lives in the survey.
+> 📦 **Scope note:** this file is the aspirational full-benchmark reference (Phase-2+); the near-term work is the 3-model DROID/Franka reproduction below.
 >
 > 🧭 **Design principles (unchanged, still sound):** (I) capability before architecture; (II) closed-loop evaluation (prediction ≠ behaviour); (III) behavioural burden of proof (prediction → better decisions → better outcomes).
 >
@@ -16,7 +16,7 @@
 
 ## 🧮 Capability × model-family matrix (the empty γ cell)
 
-> Each cell = **WAS(family, capability)**: the closed-loop advantage of that family over the ⚡VLA baseline on that capability. ⛔ *Reality:* a cross-family closed-loop comparison is **not** an unfilled cell - [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985)'s own baselines and [WorldArena](https://arxiv.org/abs/2602.08971) already build it. Treat this matrix as an organising view for the survey's WAS *assessment*, not a novel contribution. 🌌 WFM has no zero-shot action instance, so its column is a video-quality reference only ([WorldBench](https://world-bench.github.io/)), not a robot.
+> Each cell = **WAS(family, capability)**: the closed-loop advantage of that family over the ⚡VLA baseline on that capability. ⛔ *Reality:* a cross-family closed-loop comparison is **not** an unfilled cell - [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985)'s own baselines and [WorldArena](https://arxiv.org/abs/2602.08971) already build it. Treat this matrix as an organising view for the benchmark's WAS *assessment*, not a novel contribution. 🌌 WFM has no zero-shot action instance, so its column is a video-quality reference only ([WorldBench](https://world-bench.github.io/)), not a robot.
 
 | 🎯 Capability ↓ / 🧬 Family → | ⚡ VLA *(baseline)* | 🧠 LWM (latent) | 🎬 WAM (executable) | 🌌 WFM (generative) |
 |---|---|---|---|---|
@@ -154,9 +154,9 @@ flowchart LR
 ## 🛡️ Reviewer-proofing engineering steps (ICML / CVPR / ICCV / NeurIPS D&B / CoRL)
 
 🆕 **Novelty - ⛔ do NOT claim it (the "done before" citations exist; see the scoop table in `plan_rejections_risks.md`):**
-1. Do NOT label the γ cell as a novel contribution - [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines + [WorldArena](https://arxiv.org/abs/2602.08971) already build a cross-family closed-loop comparison. Use the matrix only as an organising view for the survey's WAS assessment.
+1. Do NOT label the γ cell as a novel contribution - [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines + [WorldArena](https://arxiv.org/abs/2602.08971) already build a cross-family closed-loop comparison. Use the matrix only as an organising view for the benchmark's WAS assessment.
 2. Keep a positioning table, but honestly: rows = World-in-World / WorldArena / V-JEPA-2-AC / RoboDojo / RoboWM-Bench; it shows we are one column among many, not the only filled column.
-3. Frame the deliverable as measurement/consolidation (a 3-model DROID/Franka zero-shot reproduction: π0-FAST / V-JEPA-2-AC / DreamZero), folded into the survey.
+3. Frame the deliverable as measurement/consolidation (a 3-model DROID/Franka zero-shot reproduction: π0-FAST / V-JEPA-2-AC / DreamZero), the benchmark paper's core result.
 4. WFM has no zero-shot action instance, so report it only as a video-quality reference (WorldBench), never as a robot column.
 
 🧪 **Ablations (ICML/CVPR bar):**

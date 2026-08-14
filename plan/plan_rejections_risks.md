@@ -8,7 +8,7 @@
 > - 🌌 **WFM (Cosmos) has NO zero-shot action instance** - it only generates/grades video ([WorldBench](https://world-bench.github.io/)), so the honest execution set is **3 families** (⚡🧠🎬), not 4.
 > - 🗺️ **DenseWorld zero-shot nav is infeasible** - no family drives without a trained action head + photoreal reconstruction (breaks both no-training and GPU-light).
 >
-> 🧭 **Honest decision:** do NOT ship a standalone benchmark. 🔀 **Fold into Paper-1 (the survey)** as (a) a neutral 📊 **WAS assessment** crediting the priors, and (b) a small 🔁 **reproduction table** running the 3 zero-shot models (**π0-FAST** / **V-JEPA-2-AC** / **DreamZero**) on one shared 🤖 **DROID/Franka** arm (claimed as measurement/consolidation, not novelty). This matches the two-paper plan: **assess WAS, do not adopt it**.
+> 🧭 **Honest decision:** do NOT claim a novel benchmark. 🔀 **Frame the paper honestly** as (a) a neutral 📊 **WAS assessment** crediting the priors, and (b) a small 🔁 **reproduction table** running the 3 zero-shot models (**π0-FAST** / **V-JEPA-2-AC** / **DreamZero**) on one shared 🤖 **DROID/Franka** arm (measurement/consolidation, not novelty). Core rule: **assess WAS, do not adopt it**.
 
 ## 🔬 Scoop table - why the benchmark novelty is gone (hyperlinked)
 
@@ -51,7 +51,7 @@
 🥇 **Verdict: NOVELTY NOT CONFIRMED for QA/memory too.** Both directions are scooped; the only lane with daylight is a new **execution OOD distribution** (transparent / clutter on DROID/Franka; see the distribution table at the bottom).
 
 ## 📐 Cross-venue bar (if the reproduction is written up)
-- 🧵 **Workshop / survey section:** the honest home - a measurement note, or the survey's WAS-assessment subsection.
+- 🧵 **Workshop / measurement note:** the honest home - a short measurement note, or a WAS-assessment section of the paper.
 - 📊 **NeurIPS D&B / Evaluations track:** possible fit for a *reproduction/consolidation* - needs executable + documented code, **Croissant** metadata, hosting + licence + maintenance. Non-executable artifact = **desk reject**.
 - 🎨 **CVPR / ICCV / ICML main track:** will reject on novelty (the scoop table is the reviewer's ammunition). Do NOT target as a novel benchmark.
 - 🤖 **CoRL / RSS:** value real-robot evidence; a sim-only reproduction must justify physical relevance.
@@ -60,12 +60,12 @@
 
 | # | 🧨 Reject axis | 📋 Where it bites | ❌ Why it fails | 🛠️ FIX / honest move |
 |---|---|---|---|---|
-| **1** | 🆕 Novelty of benchmark | 🎨 CVPR/ICCV/ICML | Fully scooped: [World-in-World](https://arxiv.org/abs/2510.18135), [WorldArena](https://arxiv.org/abs/2602.08971), [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines already do closed-loop cross-family WM-vs-VLA utility (see scoop table) | 🧭 Do NOT claim novelty. Fold into the survey as a WAS assessment + a reproduction table; credit all priors |
+| **1** | 🆕 Novelty of benchmark | 🎨 CVPR/ICCV/ICML | Fully scooped: [World-in-World](https://arxiv.org/abs/2510.18135), [WorldArena](https://arxiv.org/abs/2602.08971), [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985) baselines already do closed-loop cross-family WM-vs-VLA utility (see scoop table) | 🧭 Do NOT claim novelty. Frame the paper as a WAS assessment + a reproduction table; credit all priors |
 | **2** | 📏 Novelty of metric (WAS) | 🎨 ARR/ICML | "gain over VLA" = World-in-World embodied utility = [DreamZero](https://arxiv.org/html/2602.15922v1) "2x" = [L0-L7 ladder](https://arxiv.org/abs/2606.15032) optimization lift | 📊 Present WAS as an *assessed prior* metric (per-capability curve + CI); cite the three originators; do NOT brand it as ours |
 | **3** | 🧪 Ablations | 📊 ICML/CVPR | No matched-budget protocol, no seeds/CI, no human ceiling | 🔬 Fix ONE zero-shot interface; ≥5 seeds, mean + 95% CI; add human ceiling + blind floor (still worth doing for the reproduction table) |
 | **4** | 🗃️ Dataset + artifact | 📊 NeurIPS D&B (desk-reject) | No datasheet, no executable harness, no Croissant | 📦 Reuse **DROID/Franka** + [LIBERO](https://www.emergentmind.com/topics/libero) (existing datasheets); release the runner + configs + logs; host with Croissant + maintenance |
 | **5** | 🤖 No real-robot evidence | 🦾 CoRL/RSS | Sim/API-only reads as not about physical robots | 🦿 **DROID/Franka is a REAL arm** ([RoboArena](https://arxiv.org/html/2506.18123v1) eval) = genuine real-robot evidence; keep claims to the tested arm, do NOT overclaim |
-| **6** | 🎯 Venue fit | 📚 ARR (NLP) | A scooped robotics reproduction is out-of-scope for main tracks | 🧵 Target a workshop / D&B *reproduction* slot, or the survey subsection; not a main-track benchmark |
+| **6** | 🎯 Venue fit | 📚 ARR (NLP) | A scooped robotics reproduction is out-of-scope for main tracks | 🧵 Target a workshop / D&B *reproduction* slot; frame as measurement/consolidation, not a main-track novelty claim |
 | **7** | 👻 Fabricated baselines | ⚠️ all (fatal) | `Fast-WAM`, `τ₀-WM`, "Cosmos 3", `H-JEPA` are not real releases | ✅ Cite only web-verified checkpoints: ⚡ [OpenVLA](https://github.com/openvla/openvla)/π0, 🧠 [V-JEPA-2-AC](https://arxiv.org/abs/2506.09985), 🎬 [DreamZero](https://arxiv.org/html/2602.15922v1); drop the rest |
 | **8** | 🔬 Claims vs experiments | ⚠️ all (soundness) | Findings written before runs exist | 🧾 Run the 3-model **DROID/Franka** harness (π0-FAST / V-JEPA-2-AC / DreamZero) end-to-end before writing any number; release logs + configs |
 | **9** | 🌌 WFM cannot act zero-shot | 🧊 the core design | Cosmos has NO zero-shot action head - it only generates/grades video ([WorldBench](https://world-bench.github.io/)); the "4-family" claim is really 3 | 🎬 State plainly: the execution comparison is **3-family** (⚡🧠🎬). Report WFM only as a *video-quality reference* (WorldBench), never as a robot |

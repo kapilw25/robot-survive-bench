@@ -110,7 +110,7 @@ The rows below are the broader robot-dataset menu kept for the heavy Phase-2+ vi
 - 🌪️ **DenseWorld** = own-built OOD split (crowds / traffic / animals / weather); fills the counterfactual + social cells and doubles as the CoRL/RSS real-robot evidence.
 
 ## ✅ Recommended core set
-- ✅ **Zero-shot reproduction (the honest near-term deliverable):** run the 3 zero-shot families - ⚡ VLA (OpenVLA/π0), 🧠 LWM (V-JEPA-2-AC via image-goal MPC), 🎬 WAM (DreamZero) - closed-loop on **SIMPLER** (SimplerEnv: WidowX + Google-robot) + **LIBERO**. Reuse public data, no training; report WAS crediting priors. This is the table that folds into the survey.
+- ✅ **Zero-shot reproduction (the honest near-term deliverable):** run the 3 zero-shot families - ⚡ VLA (OpenVLA/π0), 🧠 LWM (V-JEPA-2-AC via image-goal MPC), 🎬 WAM (DreamZero) - closed-loop on **SIMPLER** (SimplerEnv: WidowX + Google-robot) + **LIBERO**. Reuse public data, no training; report WAS crediting priors. This is the benchmark paper's core reproduction table.
 - 🔌 **Phase 1 (Gemini-ER2, API) - metric validation only:** LIBERO-Mem + LIBERO-Long to check the harness; ER-2 is a planner stack, **not** a world-model family, so it does not rank ⚡🧠🎬.
 - 📦 **Phase 2+ (aspirational, GPUs, training-heavy):** LIBERO + AgiBot + OXE + DROID + RoboMIND + Bridge; off-HF sims (CARLA / Habitat 3.0) + DenseWorld. Retired as standalone novelty; reference only.
 
@@ -124,7 +124,7 @@ The rows below are the broader robot-dataset menu kept for the heavy Phase-2+ vi
 | 🗃️ **Artifact control** (fixes #4): datasheet + Croissant + licence + maintenance on HF from day one | ⚖️ **Ethics/licensing** (desk-reject #4): human/social (ION) data raises IRB / privacy / consent burden |
 | 🤖 **Real-robot slice (DenseWorld)** (fixes #5 for CoRL/RSS) | 🧾 **Soundness burden**: needs strong baselines + human ceiling + IAA + significance |
 
-🎯 **Recommended (honest):** do NOT re-collect manipulation data, and do NOT bank on DenseWorld for novelty. ⛔ The cross-family closed-loop WAS protocol is already published ([V-JEPA-2-AC](https://arxiv.org/abs/2506.09985), [WorldArena](https://arxiv.org/abs/2602.08971)) and DenseWorld nav is not zero-shot, so neither restores standalone novelty. Near-term: reuse **SIMPLER + LIBERO** for the 3-family (⚡🧠🎬) zero-shot reproduction that folds into the survey. DenseWorld stays a training-heavy Phase-3 reference only.
+🎯 **Recommended (honest):** do NOT re-collect manipulation data, and do NOT bank on DenseWorld for novelty. ⛔ The cross-family closed-loop WAS protocol is already published ([V-JEPA-2-AC](https://arxiv.org/abs/2506.09985), [WorldArena](https://arxiv.org/abs/2602.08971)) and DenseWorld nav is not zero-shot, so neither restores standalone novelty. Near-term: reuse **SIMPLER + LIBERO** for the 3-family (⚡🧠🎬) zero-shot reproduction, the benchmark paper's core result. DenseWorld stays a training-heavy Phase-3 reference only.
 
 ## 🗺️ DenseWorld benchmark-generation pipeline (⛔ training-heavy Phase-3, NOT zero-shot - reference only)
 
