@@ -13,6 +13,6 @@ rejected a gap paragraph, then rejected a research-language paragraph, both time
 plus per-row emojis.
 
 ## Scope
-Applies to WORKING docs (novelty_gap, analyses, status reports, comparisons). The PUBLISHED survey
-still uses academic prose (CSUR style). Related: em-dashes are also banned everywhere (see the
+Applies to WORKING docs (analyses, status reports, comparisons, plans). The PUBLISHED paper
+still uses academic prose. Related: em-dashes are also banned everywhere (see the
 block_em_dash hook).
