@@ -77,6 +77,33 @@ if [ -z "$TOKEN" ]; then
     exit 1
 fi
 
+# Preflight: verify the token actually authenticates BEFORE we commit, so an
+# expired/revoked/wrong PAT fails fast with a clear message instead of the
+# confusing post-commit "Authentication failed" that git prints. Validates auth
+# via the GitHub API (GET /user); the token is sent in a header, never printed.
+echo "Verifying $ACCOUNT token with GitHub..."
+HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://api.github.com/user)
+
+case "$HTTP_CODE" in
+    200)
+        echo "Token OK (GitHub authenticated $ACCOUNT)."
+        ;;
+    000|"")
+        echo "WARNING: could not reach the GitHub API to preflight the token (offline, or curl missing). Proceeding anyway."
+        ;;
+    *)
+        TOKVAR="GITHUB_TOKEN_$(printf '%s' "$ACCOUNT" | tr '[:lower:]' '[:upper:]')"
+        echo "FATAL: GitHub rejected the $ACCOUNT token (HTTP $HTTP_CODE) - nothing was committed."
+        echo "  The PAT in $ENV_FILE is likely expired, revoked, or missing scope."
+        echo "  Fix: regenerate a PAT (classic: 'repo'; fine-grained: Contents=Read/Write) as $USERNAME,"
+        echo "       then update $TOKVAR in $ENV_FILE and re-run."
+        exit 1
+        ;;
+esac
+
 git add .
 git commit -m "$MESSAGE"
 
