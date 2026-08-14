@@ -1,0 +1,75 @@
+% ============================================================
+%  <<TITLE>> -- ACM Computing Surveys (CSUR) format, acmart/acmsmall.
+%  Compiler: pdfLaTeX (latexmk -pdf). Replace every <<PLACEHOLDER>>.
+% ============================================================
+\PassOptionsToPackage{svgnames,dvipsnames}{xcolor} % acmart loads xcolor; set options first
+\documentclass[acmsmall,screen,nonacm]{acmart}
+
+\acmJournal{CSUR}
+\acmYear{<<YEAR>>}\acmVolume{1}\acmNumber{1}\acmArticle{1}\acmMonth{1}
+\settopmatter{authorsperrow=3}
+
+% ---- taxonomy figure packages ----
+\usepackage{forest}
+\useforestlibrary{edges}   % forked edges
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,shapes.geometric,calc}
+\usepackage{pifont}
+\usepackage{longtable}
+\usepackage{placeins}      % \FloatBarrier
+
+% coloured yes/no/partial/na marks for every comparison table
+\newcommand{\yy}{\textcolor{ForestGreen}{\ding{52}}}
+\newcommand{\nn}{\textcolor{BrickRed}{\ding{56}}}
+\newcommand{\dm}{\textcolor{gray!65}{\textbf{--}}}
+\newcommand{\pp}{\textcolor{orange!90!black}{\textbf{\textasciitilde}}}
+
+% coloured category labels (rename per topic's branches)
+\newcommand{\tcatA}{\textcolor{cat-code!55!black}{\textsf{\textbf{<<branchA>>}}}}
+\newcommand{\tcatB}{\textcolor{cat-vla!45!black}{\textsf{\textbf{<<branchB>>}}}}
+% eval-domain labels
+\newcommand{\dreal}{\textcolor{ForestGreen}{\textsf{real}}}
+\newcommand{\dsim}{\textcolor{RoyalBlue}{\textsf{sim}}}
+\newcommand{\dgame}{\textcolor{Purple}{\textsf{game}}}
+\newcommand{\dtext}{\textcolor{gray!70}{\textsf{text}}}
+
+\input{styles/taxonomy_style}   % shared forest style + palette (topic-agnostic)
+
+\begin{document}
+
+\title{<<SHORT TITLE>>}
+\subtitle{<<SUBTITLE: A Survey of ... >>}
+
+\author{<<AUTHOR1>>}
+\affiliation{\institution{<<INST1>>}\country{<<C1>>}}
+% ... more authors ...
+\renewcommand{\shortauthors}{<<Lastname>> et al.}
+
+\input{sections/0_abstract}
+
+\begin{CCSXML}
+<ccs2012>
+   <concept><concept_id><<CCS_ID>></concept_id>
+   <concept_desc><<CCS_DESC>></concept_desc>
+   <concept_significance>500</concept_significance></concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{<<CCS_DESC>>}
+\keywords{<<kw1, kw2, ..., survey>>}
+\maketitle
+
+\input{sections/1_intro}          % scope+contributions para; inputs tab_survey_compare,
+                                  % fig_taxonomy_main, fig_survey_timeline; \FloatBarrier
+\input{sections/2_taxonomy}       % inputs tab_compare_main
+\input{sections/3_techniques}     % one \input per branch section below
+% ... sections/3_<deepdive>.tex (rung membership conditions; tab_definitions; fig_architectures)
+% ... sections/4..8 per branch; 9_open_problems; limitations; future_work; 10_conclusion
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+% Appendices FOLLOW the references (ACM convention); fresh page.
+\clearpage
+\input{sections/appendix_landscape}
+
+\end{document}

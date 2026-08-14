@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Embodied Eval Atlas + Execution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFF2ED;--card:#FFFFFF;--ink:#161A16;--muted:#4E564E;--faint:#8A928A;
+  --rule:#C9D0C6;--blue:#1C5D99;--orange:#E8590C;--green:#1F7A3D;--purple:#6A3D99;
+  --gapbg:#FFF3E8;--gapline:#E8590C;
+  --disp:'Chakra Petch',sans-serif;--mono:'JetBrains Mono',monospace;--body:'Public Sans',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
+  background-image:linear-gradient(rgba(28,93,153,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(28,93,153,.05) 1px,transparent 1px);
+  background-size:28px 28px;}
+.wrap{max-width:1240px;margin:0 auto;padding:30px 20px 70px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--blue);margin:0 0 10px}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(24px,4.4vw,40px);line-height:1.05;margin:0;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--orange)}
+.sub{max-width:800px;color:var(--muted);font-size:14.5px;margin:14px 0 0}
+.sub b{color:var(--ink)}
+.tabnav{display:flex;gap:6px;margin:24px 0 4px;border-bottom:2px solid var(--ink)}
+.tab{font-family:var(--disp);font-weight:600;font-size:14px;border:2px solid var(--ink);border-bottom:none;background:transparent;color:var(--muted);padding:9px 16px;border-radius:6px 6px 0 0;cursor:pointer;transition:.12s;position:relative;top:2px}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab:hover:not([aria-selected="true"]){color:var(--ink)}
+.pane{display:none}.pane.on{display:block}
+.sechead{display:flex;align-items:baseline;gap:12px;margin:40px 0 6px;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.secnum{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--card);background:var(--ink);padding:3px 8px;border-radius:3px}
+.sechead h2{font-family:var(--disp);font-weight:600;font-size:clamp(18px,2.6vw,25px);margin:0}
+.secnote{font-size:13px;color:var(--faint);margin:8px 0 16px;max-width:860px}
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 16px}
+.fbtn{font-family:var(--mono);font-size:11.5px;border:1.5px solid var(--rule);background:var(--card);color:var(--muted);border-radius:3px;padding:6px 11px;cursor:pointer;transition:.12s}
+.fbtn:hover{border-color:var(--ink);color:var(--ink)}
+.fbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:700}
+.count{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-left:auto;align-self:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:12px}
+.p{background:var(--card);border:1.5px solid var(--rule);border-radius:6px;padding:13px 14px;position:relative;display:flex;flex-direction:column;gap:8px}
+.p::after{content:attr(data-id);position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.klass{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:inline-block;padding:2px 7px;border-radius:3px;align-self:flex-start}
+.k-target{background:rgba(28,93,153,.12);color:var(--blue)}.k-rival{background:rgba(232,89,12,.12);color:var(--orange)}
+.k-suite{background:rgba(31,122,61,.12);color:var(--green)}.k-infra{background:rgba(22,26,22,.08);color:var(--muted)}
+.pname{font-family:var(--disp);font-weight:600;font-size:15px;line-height:1.25;padding-right:52px}
+.pwhat{font-size:12.5px;color:var(--muted)}
+.pmeas{font-family:var(--mono);font-size:10.5px;color:var(--faint);border-top:1px dashed var(--rule);padding-top:8px;margin-top:auto}
+.pmeas b{color:var(--blue);font-weight:500}
+.matrix-shell{background:var(--card);border:1.5px solid var(--rule);border-radius:6px;padding:16px;overflow-x:auto}
+table.mx{border-collapse:collapse;width:100%;min-width:760px}
+.mx th,.mx td{border:1px solid var(--rule);padding:7px 9px;font-size:12px;text-align:center}
+.mx thead th{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#F6F8F4;vertical-align:bottom}
+.mx tbody th{font-family:var(--body);font-weight:600;font-size:12.5px;text-align:left;background:#F6F8F4;min-width:190px}
+.mx .sub-th{display:block;font-weight:400;color:var(--faint);font-size:9.5px;letter-spacing:0;text-transform:none;margin-top:2px}
+.c-full{background:rgba(31,122,61,.16);color:var(--green);font-family:var(--mono);font-weight:700}
+.c-part{background:rgba(28,93,153,.10);color:var(--blue);font-family:var(--mono)}
+.c-none{background:transparent;color:var(--rule);font-family:var(--mono)}
+tr.gap-row th{background:var(--gapbg)!important;border-left:4px solid var(--gapline)}
+tr.gap-row td{background:var(--gapbg)}
+tr.gap-row td.c-none{color:#E8B48F}
+.gaptag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;color:#fff;background:var(--orange);border-radius:3px;padding:1px 6px;margin-left:7px;vertical-align:1px}
+.mx-legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:12px}
+.mx-legend i{font-style:normal;font-weight:700}
+.mx-legend .lg-full{color:var(--green)}.mx-legend .lg-part{color:var(--blue)}.mx-legend .lg-none{color:var(--faint)}
+.gap-lead{background:var(--card);border:1.5px solid var(--ink);border-left:6px solid var(--orange);border-radius:6px;padding:18px 20px;margin:0 0 14px}
+.gap-lead .claim{font-family:var(--disp);font-weight:600;font-size:clamp(16px,2.4vw,21px);line-height:1.35;margin:0}
+.gap-lead .claim em{font-style:normal;color:var(--orange)}
+.gap-lead p{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+.probes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.probe{background:var(--card);border:1.5px solid var(--rule);border-radius:6px;padding:14px 15px}
+.probe .ptag{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.14em}
+.probe h3{font-family:var(--disp);font-weight:600;font-size:15px;margin:6px 0 6px}
+.probe p{font-size:12.5px;color:var(--muted);margin:0}
+.probe .src{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:9px;border-top:1px dashed var(--rule);padding-top:7px}
+.fitline{margin-top:16px;background:#EAF3EC;border:1.5px solid rgba(31,122,61,.4);border-radius:6px;padding:13px 16px;font-size:13px;color:#1d4d2c}
+.fitline b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.tier-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:22px 0 8px;display:flex;align-items:center;gap:9px}
+.tier-label .pill{color:#fff;border-radius:3px;padding:2px 8px;font-size:10px}
+.pill.shard{background:var(--orange)}.pill.solo{background:var(--green)}.pill.api{background:var(--blue)}.pill.list{background:var(--purple)}
+.mtable{background:var(--card);border:1.5px solid var(--rule);border-radius:6px;overflow-x:auto}
+table.ex{border-collapse:collapse;width:100%;min-width:820px}
+.ex th,.ex td{border-bottom:1px solid var(--rule);padding:9px 11px;font-size:12px;text-align:left;vertical-align:top}
+.ex thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:#F6F8F4;border-bottom:1.5px solid var(--rule)}
+.ex tbody tr:hover{background:#F6F8F4}
+.ex .m-name{font-family:var(--disp);font-weight:600;font-size:13.5px}
+.ex .m-hf{font-family:var(--mono);font-size:10px;color:var(--faint);display:block;margin-top:2px}
+.ex .sz{font-family:var(--mono);font-weight:700;color:var(--ink)}
+.ex .shardcell{font-family:var(--mono);font-size:11px}
+.ex .shardcell.hot{color:var(--orange);font-weight:700}
+.skilltag{font-family:var(--mono);font-size:9.5px;background:rgba(106,61,153,.1);color:var(--purple);border-radius:3px;padding:1px 5px;margin:1px 2px 1px 0;display:inline-block}
+.scb{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.sc-small{background:rgba(31,122,61,.14);color:var(--green)}
+.sc-med{background:rgba(28,93,153,.12);color:var(--blue)}
+.sc-large{background:rgba(232,89,12,.14);color:var(--orange)}
+.linklist{display:flex;gap:20px;flex-wrap:wrap;margin:4px 0 6px}
+.linklist a{color:var(--blue);font-family:var(--mono);font-size:12px;text-decoration:none;border-bottom:1px solid rgba(28,93,153,.35);padding-bottom:1px}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:16px}
+.rung{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--purple);border-radius:6px;padding:13px 14px}
+.rung.entry{border-left-color:var(--green)}
+.rung h4{font-family:var(--disp);font-weight:600;font-size:14px;margin:0 0 5px}
+.rung p{font-size:12px;color:var(--muted);margin:0}
+.rung code{font-family:var(--mono);font-size:11px;background:#F1EEF6;padding:0 3px;border-radius:3px}
+.rung .lv{font-family:var(--mono);font-size:9.5px;color:var(--purple);font-weight:700;letter-spacing:.1em}
+.rung.entry .lv{color:var(--green)}
+.small{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:34px;line-height:1.8;border-top:1px solid var(--rule);padding-top:12px}
+:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Embodied Eval Atlas · arXiv survey + execution · July 2026</p>
+  <h1>Gemini Robotics benchmark map <em>+</em> World-Action Models and the skill each unlocks</h1>
+  <p class="sub">Two tabs. <b>Benchmark Atlas</b> is the landscape and the unclaimed novelty row. <b>Execution</b> lists the World-Action Models used in robotics papers, and maps each to the concrete distributed skill it lets you practice: small WAMs to data parallelism (FSDP/DDP), the large video-foundation backbones to model sharding.</p>
+
+  <div class="tabnav" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-t="atlas">Benchmark Atlas</button>
+    <button class="tab" role="tab" aria-selected="false" data-t="exec">Execution · WAMs &amp; skills</button>
+  </div>
+
+  <div class="pane on" id="pane-atlas">
+    <div class="sechead"><span class="secnum">T1</span><h2>Benchmark &amp; rival landscape</h2></div>
+    <p class="secnote"><b>Tests-GR</b> = evaluates Gemini Robotics ER directly · <b>Rival</b> = models publishing wins over it · <b>Suite</b> = standard batteries · <b>Harness</b> = eval infra.</p>
+    <div class="filters" id="filters">
+      <button class="fbtn" data-k="all" aria-pressed="true">All</button>
+      <button class="fbtn" data-k="target" aria-pressed="false">Tests-GR</button>
+      <button class="fbtn" data-k="rival" aria-pressed="false">Rival model</button>
+      <button class="fbtn" data-k="suite" aria-pressed="false">Eval suite</button>
+      <button class="fbtn" data-k="infra" aria-pressed="false">Harness / infra</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="papers"></div>
+
+    <div class="sechead"><span class="secnum">T2</span><h2>Coverage matrix — where the white space is</h2></div>
+    <p class="secnote">Rows = capability axes (including the three GR2 markets). Columns = benchmark clusters. Orange band = measured by no one.</p>
+    <div class="matrix-shell">
+      <table class="mx">
+        <thead><tr>
+          <th style="text-align:left">Capability axis</th>
+          <th>Spatial / QA<span class="sub-th">ERQA · ERIQ · VSI-Bench</span></th>
+          <th>Perception grounding<span class="sub-th">EPIC-Bench</span></th>
+          <th>Safety / adversarial<span class="sub-th">RoboJailBench · ASIMOV</span></th>
+          <th>Policy rollouts<span class="sub-th">LIBERO · SimplerEnv</span></th>
+          <th>World-model / memory<span class="sub-th">ENACT · MBench*</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><th>Single-turn spatial reasoning</th><td class="c-full">●</td><td class="c-part">◐</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-part">◐</td></tr>
+          <tr><th>Visual grounding / affordance</th><td class="c-part">◐</td><td class="c-full">●</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td></tr>
+          <tr><th>Safety under attack</th><td class="c-none">○</td><td class="c-none">○</td><td class="c-full">●</td><td class="c-none">○</td><td class="c-none">○</td></tr>
+          <tr><th>Task success (needs training)</th><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-full">●</td><td class="c-none">○</td></tr>
+          <tr><th>Egocentric scene prediction</th><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-full">●</td></tr>
+          <tr class="gap-row"><th>Multi-turn world-state memory<span class="gaptag">GAP</span></th><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-part">◐</td><td class="c-part">◐</td></tr>
+          <tr class="gap-row"><th>Mid-task re-instruction consistency<span class="gaptag">GAP</span></th><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td></tr>
+          <tr class="gap-row"><th>Multi-robot state coherence<span class="gaptag">GAP</span></th><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td><td class="c-none">○</td></tr>
+        </tbody>
+      </table>
+      <div class="mx-legend">
+        <span><i class="lg-full">●</i> primary axis</span><span><i class="lg-part">◐</i> partial</span><span><i class="lg-none">○</i> unmeasured</span>
+        <span>* MBench = memory for video world models, nearest neighbor not occupant</span>
+      </div>
+    </div>
+
+    <div class="sechead"><span class="secnum">T2b</span><h2>The novelty gap, stated as a paper</h2></div>
+    <div class="gap-lead">
+      <p class="claim">Every ER benchmark is single-turn. Every memory benchmark targets video world models. GR2 sells <em>long-horizon planning, live redirection, multi-robot collaboration</em> — and nothing measures whether its world-state survives any of them.</p>
+      <p>The intersection — <b>multi-turn, intervention-robust world-state memory for embodied-reasoning models, evaluated purely by inference</b> — is unoccupied, and extends your survey's memory-consistency taxonomy into the embodied frontier.</p>
+    </div>
+    <div class="probes">
+      <div class="probe"><span class="ptag">PROBE A</span><h3>Departure-return persistence</h3><p>Objects moved / occluded across turns; later turns query pre-occlusion state. Scores permanence + state decay.</p><div class="src">extends MBench to ER APIs</div></div>
+      <div class="probe"><span class="ptag">PROBE B</span><h3>Mid-task re-instruction</h3><p>Inject a plan change halfway; test whether prior constraints persist or silently reset.</p><div class="src">targets GR2 "redirect it" claim</div></div>
+      <div class="probe"><span class="ptag">PROBE C</span><h3>Two-agent state coherence</h3><p>Shared scene, two robot viewpoints in dialogue; check for one consistent world-state vs forked ones.</p><div class="src">targets multi-robot claim</div></div>
+      <div class="probe"><span class="ptag">PROBE D</span><h3>Memory to action gap</h3><p>Correlate memory-probe scores with published rollout success. A negative result is publishable.</p><div class="src">extends ERIQ 2512.24125</div></div>
+    </div>
+    <div class="fitline"><b>Executable by you ·</b> inference-only across API (Gemini Robotics ER 2, GPT-5.x) + open weights on rented spot GPUs; episodes re-sequenced from public embodied datasets; no training, no robot. See the Execution tab for which models let you practice which distributed skill.</div>
+  </div>
+
+  <div class="pane" id="pane-exec">
+    <div class="sechead"><span class="secnum">T3</span><h2>Execution: World-Action Models and the distributed skill each unlocks</h2></div>
+    <p class="secnote">You want WAMs, not general VLMs. The honest constraint: <b>most WAM policies are small</b> (sub-3B, single-GPU, built for real-time control), so they will not force <i>model</i> sharding. That does not cost you the skill, it moves it to <b>data parallelism</b>. Two practice grounds: (A) small WAMs, where FSDP / DDP + data-parallel sharded eval is exactly the hands-on you get; (B) the large video-foundation backbones WAMs fine-tune from, where model sharding (tensor / expert / full-shard) becomes unavoidable.</p>
+
+    <div class="tier-label"><span class="pill solo">Tier 1</span> World-Action Models — the models you want · data-parallel practice</div>
+    <div class="mtable"><table class="ex">
+      <thead><tr><th>Model</th><th>arXiv / note</th><th>Type</th><th>Scale</th><th>Distributed skill it unlocks</th></tr></thead>
+      <tbody id="wam"></tbody>
+    </table></div>
+
+    <div class="tier-label"><span class="pill shard">Tier 2</span> Video-foundation backbones WAMs fine-tune from — force model sharding</div>
+    <div class="mtable"><table class="ex">
+      <thead><tr><th>Backbone</th><th>Scale</th><th>Single-node sharding</th><th>Skills it forces</th></tr></thead>
+      <tbody id="backbone"></tbody>
+    </table></div>
+
+    <div class="tier-label"><span class="pill api">Tier 3</span> Frontier — API-only comparison arms</div>
+    <div class="mtable"><table class="ex">
+      <thead><tr><th>Model</th><th>Access</th><th>Sharding</th><th>Role</th></tr></thead>
+      <tbody id="apiarm"></tbody>
+    </table></div>
+
+    <div class="tier-label"><span class="pill list">Live lists</span> keep these open while you build</div>
+    <div class="linklist">
+      <a href="https://github.com/OpenMOSS/Awesome-WAM" target="_blank" rel="noopener">OpenMOSS / Awesome-WAM</a>
+      <a href="https://github.com/DravenALG/awesome-vla-wam" target="_blank" rel="noopener">DravenALG / awesome-vla-wam</a>
+    </div>
+
+    <div class="sechead" style="margin-top:34px"><span class="secnum">T3b</span><h2>Skill ladder — data parallelism first, then model sharding</h2></div>
+    <p class="secnote">Reordered for your reality: the first two rungs are reachable <b>today</b> with the small WAMs above via FSDP/DDP. The upper rungs need the Tier-2 backbones. Each rung is a résumé line and a paper figure.</p>
+    <div class="ladder">
+      <div class="rung entry"><span class="lv">RUNG 1 · reachable now</span><h4>Data parallelism (DDP)</h4><p>Replicate a small WAM across N GPUs and <b>shard the eval workload</b> (episodes) data-parallel. Push aggregate throughput, measure per-GPU utilization. Pure win with sub-3B models.</p></div>
+      <div class="rung entry"><span class="lv">RUNG 2 · reachable now</span><h4>FSDP full-shard (ZeRO-3)</h4><p>Shard params, grads and optimizer state to fine-tune or serve a mid-size WAM past one GPU's memory. Add activation checkpointing and CPU offload. <code>--sharding-strategy FULL_SHARD</code>.</p></div>
+      <div class="rung"><span class="lv">RUNG 3 · needs Tier 2</span><h4>Tensor / expert parallelism</h4><p>Split a large video-FM backbone (Cosmos, Summer-22B) across GPUs with all-reduce; expert-parallel for any MoE backbone. True model sharding.</p></div>
+      <div class="rung"><span class="lv">RUNG 4</span><h4>Quantization, lossless-ish</h4><p>FP8 / NVFP4 / AWQ / GPTQ to fit big backbones on fewer GPUs. Measure the accuracy delta on your harness — that delta is a paper figure.</p></div>
+      <div class="rung"><span class="lv">RUNG 5</span><h4>KV-cache, throughput &amp; MFU</h4><p>Paged attention, continuous batching, prefix caching; then measure model-FLOPs-utilization and tune the comm bottleneck. The language infra interviews speak.</p></div>
+    </div>
+
+    <div class="fitline" style="margin-top:22px"><b>The compounding move ·</b> data-parallel eval of these WAMs to run your memory-consistency probes IS the benchmark's infrastructure, and stepping up to shard a Tier-2 backbone adds the model-parallel skill on top. One body of work yields three things: the P0/P1 benchmark paper, an FSDP + distributed-eval résumé line, and a reusable multi-GPU harness. One node, one bill.</div>
+
+    <p class="small" id="exsrc"></p>
+  </div>
+</div>
+
+<script>
+document.querySelector('.tabnav').addEventListener('click',function(e){
+  var t=e.target.closest('.tab'); if(!t) return;
+  document.querySelectorAll('.tab').forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false');});
+  document.getElementById('pane-atlas').classList.toggle('on',t.dataset.t==='atlas');
+  document.getElementById('pane-exec').classList.toggle('on',t.dataset.t==='exec');
+  window.scrollTo({top:0});
+});
+var P=[
+ {k:"target",id:"2605.19328",n:"RoboJailBench",w:"Adversarial attacks & defenses on embodied agents; uses Gemini Robotics ER 1.6 as the SOTA target.",m:"jailbreak · defense robustness"},
+ {k:"target",id:"2605.17070",n:"EPIC-Bench",w:"Fine-grained embodied visual grounding; flags QA-only benchmarks as incomplete.",m:"grounding accuracy"},
+ {k:"target",id:"2512.24125",n:"ERIQ",w:"6K+ QA, 4 reasoning dims; shows ER score correlates with VLA generalization.",m:"embodied reasoning IQ"},
+ {k:"target",id:"2509.25885",n:"SafeMind",w:"Benchmarks & mitigates safety risks in embodied LLM agents.",m:"safety-risk incidence"},
+ {k:"target",id:"—",n:"ASIMOV / ERQA",w:"DeepMind's own semantic-safety + embodied-QA sets; part of GR-ER's 15-benchmark battery.",m:"safety · embodied QA"},
+ {k:"rival",id:"2606.11324",n:"Embodied-R1.5 (8B)",w:"SOTA on 16/24 embodied benchmarks, beating Gemini-Robotics-ER-1.5 and GPT-5.4.",m:"24-benchmark battery"},
+ {k:"rival",id:"2605.02881",n:"Molmo2-ER / MolmoAct2",w:"Beats Gemini-ER 1.5 Thinking on a 13-benchmark ER average (63.8%).",m:"13-benchmark average"},
+ {k:"rival",id:"2604.07430",n:"Hy-Embodied-0.5",w:"Tencent embodied foundation model in the 2026 rival cohort.",m:"embodied VLM benchmarks"},
+ {k:"rival",id:"—",n:"pi-0.5 / pi-0.7 · GR00T N1.x",w:"Physical Intelligence & NVIDIA VLA lines; standard rollout rivals.",m:"rollout success"},
+ {k:"suite",id:"NeurIPS23",n:"LIBERO / LIBERO-Plus",w:"130 tasks + 10,030-task robustness set. Requires trained policies.",m:"success under shift"},
+ {k:"suite",id:"2024",n:"SimplerEnv",w:"Real-to-sim proxy; correlates with physical robots. Policy-side.",m:"real-to-sim success"},
+ {k:"suite",id:"—",n:"Spatial battery",w:"RoboSpatial · PointArena · VSI-Bench · OpenEQA · BLINK · CV-Bench — the single-turn canon.",m:"pointing · spatial QA"},
+ {k:"suite",id:"2511.20937",n:"ENACT / EXPLORE-Bench",w:"Egocentric world-modeling & long-horizon scene prediction.",m:"world-model probing"},
+ {k:"infra",id:"github",n:"vla-evaluation-harness (AI2)",w:"18 benchmarks x 13 servers, 2,456-model leaderboard. Checkpoints only, not API frontier systems.",m:"unified rollout eval"}
+];
+var grid=document.getElementById('papers'),count=document.getElementById('count'),cur="all";
+function escp(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function rA(){var r=P.filter(function(p){return cur==="all"||p.k===cur;});
+  var names={target:"tests-GR",rival:"rival model",suite:"eval suite",infra:"harness / infra"};
+  grid.innerHTML=r.map(function(p){return '<div class="p" data-id="'+escp(p.id)+'"><span class="klass k-'+p.k+'">'+names[p.k]+'</span><div class="pname">'+escp(p.n)+'</div><div class="pwhat">'+escp(p.w)+'</div><div class="pmeas">measures to <b>'+escp(p.m)+'</b></div></div>';}).join("");
+  count.textContent=r.length+" / "+P.length;}
+document.getElementById('filters').addEventListener('click',function(e){var b=e.target.closest('.fbtn');if(!b)return;cur=b.dataset.k;document.querySelectorAll('.fbtn').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});rA();});
+rA();
+
+/* ---- WAMs (Tier 1): small policies, data-parallel practice ---- */
+var WAM=[
+ {n:"DreamZero",id:"2602.15922",t:"video WAM · zero-shot policy",sc:"med",sk:["data-parallel eval","throughput"]},
+ {n:"VLA-JEPA",id:"2602.10098",t:"JEPA latent WAM",sc:"small",sk:["FSDP fine-tune","DP eval"]},
+ {n:"Cosmos Policy",id:"2026",t:"video-FM WAM (fine-tunes Cosmos)",sc:"large",sk:["-> model-shard, see Tier 2"]},
+ {n:"Fast-WAM",id:"2603.16666",t:"test-time-efficient WAM",sc:"small",sk:["DP eval","latency profiling"]},
+ {n:"GigaWorld-Policy",id:"2603.17240",t:"action-centered WAM",sc:"large",sk:["FSDP full-shard"]},
+ {n:"AtomVLA",id:"2603.08519",t:"predictive latent WAM",sc:"small",sk:["FSDP fine-tune"]},
+ {n:"DDP-WM",id:"2602.01780",t:"disentangled-dynamics WAM",sc:"small",sk:["DP eval"]},
+ {n:"DreamVLA",id:"—",t:"world-knowledge VLA-WAM",sc:"small",sk:["FSDP fine-tune"]},
+ {n:"WorldVLA / RynnVLA-002",id:"—",t:"interleaved AR world+action",sc:"med",sk:["FSDP","DP eval"]},
+ {n:"UWM (Unified World Models)",id:"RSS'25",t:"video+action diffusion",sc:"med",sk:["FSDP","DP eval"]},
+ {n:"World-VLA-Loop",id:"2026",t:"closed-loop video-WM + VLA",sc:"med",sk:["FSDP"]},
+ {n:"Lingbot-VA",id:"—",t:"causal world modeling",sc:"small",sk:["DP eval"]},
+ {n:"mimic-video",id:"2512.15692",t:"video-action model",sc:"med",sk:["FSDP","DP eval"]},
+ {n:"MotuBrain / Motus",id:"2026",t:"latent-action world model",sc:"med",sk:["FSDP"]},
+ {n:"Being-H0.5 / 0.7",id:"2601.12993",t:"human-centric WAM",sc:"large",sk:["FSDP full-shard"]},
+ {n:"JEPA-VLA",id:"2026",t:"predictive-embedding WAM (V-JEPA 2)",sc:"small",sk:["FSDP fine-tune"]},
+ {n:"GE-Act · LDA-1B · WoG · RISE · WAV",id:"2026",t:"WAM variants",sc:"small",sk:["DP eval"]},
+ {n:"Kairos · MM-ACT · AdaWorldPolicy · CoWVLA",id:"2026",t:"WAM / CoW variants",sc:"small",sk:["DP eval"]}
+];
+/* ---- Backbones (Tier 2): force model sharding ---- */
+var BB=[
+ {n:"NVIDIA Cosmos (world FM)",sz:"~7B / 14B+",shard:"1-2x (7B) · 2-4x (14B) TP/FSDP",hot:true,sk:["tensor-parallel","FSDP full-shard","FP8/NVFP4"]},
+ {n:"Summer-22B (video FM)",sz:"22B",shard:"2x GPU (TP / FSDP)",hot:true,sk:["tensor-parallel","FSDP","quantization"]},
+ {n:"GigaWorld",sz:"large",shard:"2-4x GPU",hot:true,sk:["tensor-parallel","FSDP full-shard"]},
+ {n:"V-JEPA 2 (large variants)",sz:"ViT-g ~1B -> larger",shard:"1x (1B) · shard larger",hot:false,sk:["FSDP","DP eval"]},
+ {n:"DreamDojo (robot world model)",sz:"large",shard:"multi-GPU",hot:false,sk:["FSDP","tensor-parallel"]}
+];
+/* ---- API arms (Tier 3) ---- */
+var API=[
+ {n:"Gemini Robotics ER 2",a:"DeepMind API",sh:"none (hosted)",role:"primary target under test"},
+ {n:"GPT-5.x (multimodal)",a:"OpenAI API",sh:"none (hosted)",role:"frontier comparison arm"}
+];
+var scName={small:"policy · small",med:"WAM · med",large:"FM-based · large"};
+function skcell(a){return a.map(function(s){return '<span class="skilltag">'+escp(s)+'</span>';}).join("");}
+document.getElementById('wam').innerHTML=WAM.map(function(m){return '<tr><td><span class="m-name">'+escp(m.n)+'</span></td><td class="shardcell" style="color:var(--faint)">'+escp(m.id)+'</td><td>'+escp(m.t)+'</td><td><span class="scb sc-'+m.sc+'">'+scName[m.sc]+'</span></td><td>'+skcell(m.sk)+'</td></tr>';}).join("");
+document.getElementById('backbone').innerHTML=BB.map(function(m){return '<tr><td><span class="m-name">'+escp(m.n)+'</span></td><td class="sz">'+escp(m.sz)+'</td><td class="shardcell '+(m.hot?'hot':'')+'">'+escp(m.shard)+'</td><td>'+skcell(m.sk)+'</td></tr>';}).join("");
+document.getElementById('apiarm').innerHTML=API.map(function(m){return '<tr><td><span class="m-name">'+escp(m.n)+'</span></td><td class="shardcell">'+escp(m.a)+'</td><td class="shardcell">'+escp(m.sh)+'</td><td>'+escp(m.role)+'</td></tr>';}).join("");
+document.getElementById('exsrc').textContent="WAM list from OpenMOSS/Awesome-WAM, DravenALG/awesome-vla-wam and World Model for Robot Learning survey (2605.00080). arXiv: DreamZero 2602.15922 · VLA-JEPA 2602.10098 · Fast-WAM 2603.16666 · GigaWorld-Policy 2603.17240 · AtomVLA 2603.08519 · DDP-WM 2602.01780 · mimic-video 2512.15692 · Being-H 2601.12993. Backbones: NVIDIA Cosmos, Summer-22B (2026), V-JEPA 2 (2025), GigaWorld, DreamDojo. Scale badges are class estimates (most WAM policies are sub-3B, single-GPU); confirm exact params + HF gating before budgeting GPU hours. Data parallelism = replicate model, shard the workload; model parallelism = shard the model itself.";
+</script>
+</body>
+</html>

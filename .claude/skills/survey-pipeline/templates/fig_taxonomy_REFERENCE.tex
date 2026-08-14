@@ -1,0 +1,70 @@
+% HERO FIGURE -- grouped-cell taxonomy, one-sided (grow=east).
+% Each sub-family = ONE terminal cell; each line = "Name: <trimmed REAL title> [cite]" (no wrap).
+% Titles are the papers' actual titles from refs.bib, trimmed (filler removed). All 77 systems.
+\begin{figure*}[p]
+\centering
+\resizebox{!}{0.88\textheight}{%
+\begin{forest}
+  for tree={align=center},
+  where n children=0{font=\footnotesize, align=left}{font=\normalsize},
+  where level=1{font=\large}{},
+  where level=0{font=\Large}{},
+[\textbf{Robot-learning}\\\textbf{techniques}\\\textbf{for Physical AI}, fill=tx-root, text width=8.5em
+  [\textbf{\S3.1}\\\textbf{Code-as-policy}, fill=cat-code, text width=9em
+    [\textbf{\S3.1.1 Zero-shot}\\\textbf{synthesis}, fill=secA, text width=9.5em
+      [{\textbf{Code-as-Policies}: LLM programs for embodied control~\citep{codeaspolicies}\\\textbf{ProgPrompt}: situated robot task plans via LLMs~\citep{progprompt}\\\textbf{VoxPoser}: composable 3D value maps~\citep{voxposer}\\\textbf{Instruct2Act}: multimodal instructions to actions~\citep{instruct2act}\\\textbf{ChatGPT for Robotics}: design principles \& abilities~\citep{chatgptrobotics}\\\textbf{TidyBot}: personalised robot assistance~\citep{tidybot}\\\textbf{RoboCodeX}: multimodal code for behavior synthesis~\citep{robocodex}\\\textbf{RoboScript}: code for free-form manipulation~\citep{roboscript}\\\textbf{Text2Motion}: instructions to feasible plans~\citep{text2motion}\\\textbf{Demo2Code}: demonstrations to synthesized code~\citep{demo2code}\\\textbf{Statler}: state-maintaining LLMs for reasoning~\citep{statler}\\\textbf{Prompt2Walk}: prompt a robot to walk with LLMs~\citep{prompt2walk}\\\textbf{RoboPro}: video-instructed policy code generation~\citep{robopro}}, fill=secAl, text width=33em, align=left]
+    ]
+    [\textbf{\S3.1.2 Closed-loop}\\\textbf{self-repair}, fill=secB, text width=9.5em
+      [{\textbf{Inner Monologue}: embodied reasoning via planning~\citep{innermonologue}\\\textbf{DoReMi}: recovering plan-execution misalignment~\citep{doremi}\\\textbf{REFLECT}: summarizing experiences for failure explanation~\citep{reflect}\\\textbf{Code-as-Monitor}: constraint-aware visual programming~\citep{codeasmonitor}\\\textbf{AHA}: VLM reasoning over manipulation failures~\citep{aha}\\\textbf{Introspective Planning}: uncertainty vs.\ task ambiguity~\citep{introspective}}, fill=secBl, text width=33em, align=left]
+    ]
+    [\textbf{\S3.1.3 Skill-library}\\\textbf{accumulation}, fill=secC, text width=9.5em
+      [{\textbf{RoboCoder}: from basic skills to general tasks~\citep{robocoder}\\\textbf{DROC}: distilling knowledge via language corrections~\citep{droc}}, fill=secCl, text width=33em, align=left]
+    ]
+    [\textbf{\S3.1.4 Evolutionary}\\\textbf{search}, fill=secD, text width=9.5em
+      [{\textbf{CaP-X}: benchmarking \& improving coding agents~\citep{capx}\\\textbf{RoboEvolve}: co-evolving planner-simulator~\citep{roboevolve}\\\textbf{GEAR}: policies via LLM evolutionary search~\citep{codeevolution}}, fill=secDl, text width=33em, align=left]
+    ]
+    [\textbf{\S3.1.5 Full}\\\textbf{self-improving loop}, fill=secE, text width=9.5em
+      [{\textbf{ASPIRE}: agentic skills discovery for robotics~\citep{aspire}\\\textbf{ENPIRE}: real-world policy self-improvement~\citep{enpire}\\\textbf{RoboClaw}: scalable long-horizon robotic tasks~\citep{roboclaw}}, fill=secEl, text width=33em, align=left]
+    ]
+  ]
+  [\textbf{\S3.2 End-to-end}\\\textbf{VLA}, fill=cat-vla, text width=9em
+    [{\textbf{RT-1}: robotics transformer for real-world control~\citep{rt1}\\\textbf{RT-2}: VLA models transfer web knowledge~\citep{rt2}\\\textbf{Octo}: open-source generalist robot policy~\citep{octo}\\\textbf{OpenVLA}: open-source VLA model~\citep{openvla}\\\textbf{RoboFlamingo}: VLM foundation models as imitators~\citep{roboflamingo}\\\textbf{CogACT}: synergizing cognition and action~\citep{cogact}\\\textbf{SpatialVLA}: spatial representations for VLA~\citep{spatialvla}\\$\boldsymbol{\pi_0}$: VLA flow model for general control~\citep{pi0}\\$\boldsymbol{\pi_{0.5}}$: VLA with open-world generalisation~\citep{pi05}\\\textbf{GR00T N1}: foundation model for humanoid robots~\citep{groot}\\\textbf{Gemini Robotics}: bringing AI into the physical world~\citep{geminirobotics}}, fill=leaf-vla, text width=33em, align=left]
+  ]
+  [\textbf{\S3.3 Reward}\\\textbf{synthesis}, fill=cat-rew, text width=9em
+    [{\textbf{Eureka}: human-level reward design via LLMs~\citep{eureka}\\\textbf{DrEureka}: LLM-guided sim-to-real transfer~\citep{dreureka}\\\textbf{Text2Reward}: reward shaping with LLMs~\citep{text2reward}\\\textbf{Language-to-Rewards}: for robotic skill synthesis~\citep{l2r}\\\textbf{Eurekaverse}: environment curriculum generation~\citep{eurekaverse}\\\textbf{RoboGen}: automated learning via generative sim~\citep{robogen}\\\textbf{Auto MC-Reward}: automated dense reward design~\citep{automcreward}}, fill=leaf-rew, text width=33em, align=left]
+  ]
+  [\textbf{\S3.4 Skill}\\\textbf{libraries}, fill=cat-skill, text width=9em
+    [\textbf{\S3.4.1 Unsupervised}\\\textbf{latent-RL}, fill=cat-skill, text width=9.5em
+      [{\textbf{DIAYN}: learning skills without a reward function~\citep{diayn}\\\textbf{DADS}: dynamics-aware discovery of skills~\citep{dads}\\\textbf{LSD}: Lipschitz-constrained skill discovery~\citep{lsd}\\\textbf{CIC}: contrastive intrinsic control~\citep{cic}\\\textbf{METRA}: scalable unsupervised RL, metric-aware~\citep{metra}}, fill=leaf-skill, text width=33em, align=left]
+    ]
+    [\textbf{\S3.4.2 Skill-space}\\\textbf{\& hierarchical RL}, fill=cat-skill, text width=9.5em
+      [{\textbf{SPiRL}: accelerating RL with learned skill priors~\citep{spirl}\\\textbf{OPAL}: offline primitive discovery~\citep{opal}\\\textbf{PARROT}: data-driven behavioral priors~\citep{parrot}\\\textbf{SkiMo}: skill-based model-based RL~\citep{skimo}}, fill=leaf-skill, text width=33em, align=left]
+    ]
+    [\textbf{\S3.4.3 LLM \&}\\\textbf{code libraries}, fill=cat-skill, text width=9.5em
+      [{\textbf{Voyager}: open-ended embodied agent with LLMs~\citep{voyager}\\\textbf{LOTUS}: continual imitation via skill discovery~\citep{lotus}\\\textbf{LRLL}: bootstrapping composable skills~\citep{lrll}\\\textbf{BOSS}: learning new tasks with LLM guidance~\citep{boss}\\\textbf{SPRINT}: pre-training via instruction relabeling~\citep{sprint}\\\textbf{Uni-Skill}: self-evolving skill repository~\citep{uniskill}\\\textbf{SkillFlow}: lifelong skill discovery \& evolution~\citep{skillflow}}, fill=leaf-skill, text width=33em, align=left]
+    ]
+    [\textbf{\S3.4.4 Open-world}\\\textbf{LLM agents}, fill=cat-skill, text width=9.5em
+      [{\textbf{GITM}: capable agents with text-based memory~\citep{gitm}\\\textbf{JARVIS-1}: memory-augmented multimodal agents~\citep{jarvis1}\\\textbf{ExpeL}: LLM agents are experiential learners~\citep{expel}\\\textbf{Optimus-1}: hybrid multimodal memory agents~\citep{optimus1}\\\textbf{Odyssey}: Minecraft agents with open-world skills~\citep{odyssey}}, fill=leaf-skill, text width=33em, align=left]
+    ]
+  ]
+  [\textbf{\S3.5 Sim-to-real}\\\textbf{\& transfer}, fill=cat-trans, text width=9em
+    [{\textbf{Open X-Embodiment}: datasets and RT-X models~\citep{openx}\\\textbf{CrossFormer}: one policy for many embodiments~\citep{crossformer}\\\textbf{RoboCat}: self-improving generalist agent~\citep{robocat}\\\textbf{Mirage}: zero-shot transfer via cross-painting~\citep{mirage}}, fill=leaf-trans, text width=33em, align=left]
+  ]
+  [\textbf{\S3.6 Benchmarks}\\\textbf{\& simulators}, fill=cat-bench, text width=9em
+    [{\textbf{LIBERO}: knowledge transfer for lifelong learning~\citep{libero}\\\textbf{robosuite}: modular simulation framework~\citep{robosuite}\\\textbf{BEHAVIOR-1K}: 1000 everyday household activities~\citep{behavior1k}\\\textbf{Meta-World}: benchmark for multi-task \& meta RL~\citep{metaworld}\\\textbf{RLBench}: robot learning benchmark \& environment~\citep{rlbench}\\\textbf{ManiSkill2}: unified benchmark for manipulation~\citep{maniskill2}\\\textbf{CALVIN}: language-conditioned long-horizon tasks~\citep{calvin}}, fill=leaf-bench, text width=33em, align=left]
+  ]
+]
+\end{forest}}
+\caption{\textbf{The weights-versus-skills taxonomy of robot learning} (all 77 systems). Each
+sub-family is one cell listing its systems, each with a trimmed form of the paper's own title.
+Left fork = inspectable \emph{code / skills} (\S3.1, \S3.4); the \S3.1 cells are shaded by
+\emph{degree of self-improvement}, from \colorbox{secAl}{\scriptsize zero-shot} to
+\colorbox{secEl}{\scriptsize the full feedback+memory+search loop}. Full per-system detail:
+Tables~\ref{tab:compare_main}--\ref{tab:compare_34}.}
+\Description{A tree diagram organising 77 robot-learning systems under the root ``robot-learning
+techniques for physical AI'' into six branches: code-as-policy (with five self-improvement rungs from
+zero-shot synthesis to a full feedback-plus-memory-plus-search loop), end-to-end vision-language-action
+models, reward synthesis, skill libraries, sim-to-real transfer, and benchmarks; each branch lists its
+constituent systems.}
+\label{fig:taxonomy_main}
+\end{figure*}

@@ -1,0 +1,58 @@
+% ============================================================
+%  Shared taxonomy style: forked-edge forest (grow=east, reversed),
+%  rounded
+%  rectangles, per-category colour blocks.  Content colours are our
+%  six robot-learning domains.
+% ============================================================
+
+% ---- draw + root ----
+\definecolor{hidden-draw}{RGB}{40,40,40}
+\definecolor{tx-root}{HTML}{D1D5DB}
+
+% ---- per-domain category (darker) / leaf (lighter) fills ----
+\definecolor{cat-code}{HTML}{93C5FD}\definecolor{leaf-code}{HTML}{DBEAFE}   % §3.1 blue
+\definecolor{cat-vla}{HTML}{5EEAD4}\definecolor{leaf-vla}{HTML}{CCFBF1}     % §3.2 teal
+\definecolor{cat-rew}{HTML}{FDBA74}\definecolor{leaf-rew}{HTML}{FEEBC8}     % §3.3 orange
+\definecolor{cat-skill}{HTML}{C4B5FD}\definecolor{leaf-skill}{HTML}{EDE9FE} % §3.4 purple
+\definecolor{cat-trans}{HTML}{F9A8D4}\definecolor{leaf-trans}{HTML}{FCE7F3} % §3.5 pink
+\definecolor{cat-bench}{HTML}{86EFAC}\definecolor{leaf-bench}{HTML}{DCFCE7} % §3.6 green
+
+% ---- per-sub-section palette (deep-dive figures: one colour per sub-section) ----
+\definecolor{secA}{HTML}{93C5FD}\definecolor{secAl}{HTML}{DBEAFE} % blue
+\definecolor{secB}{HTML}{5EEAD4}\definecolor{secBl}{HTML}{CCFBF1} % teal
+\definecolor{secC}{HTML}{86EFAC}\definecolor{secCl}{HTML}{DCFCE7} % green
+\definecolor{secD}{HTML}{FCD34D}\definecolor{secDl}{HTML}{FEF3C7} % amber
+\definecolor{secE}{HTML}{FCA5A5}\definecolor{secEl}{HTML}{FEE2E2} % red (the gap)
+\definecolor{secF}{HTML}{C4B5FD}\definecolor{secFl}{HTML}{EDE9FE} % purple
+\definecolor{secG}{HTML}{F9A8D4}\definecolor{secGl}{HTML}{FCE7F3} % pink
+
+% ---- the forest style, applied to every tree via default preamble ----
+\forestset{
+  default preamble={
+    forked edges,
+    for tree={
+      grow=east,
+      reversed=true,
+      anchor=base west,
+      parent anchor=east,
+      child anchor=west,
+      base=center,
+      font=\large,
+      rectangle,
+      draw=hidden-draw,
+      rounded corners,
+      align=center,
+      text centered,
+      minimum width=5em,
+      edge+={darkgray, line width=1pt},
+      s sep=3pt,
+      inner xsep=2pt,
+      inner ysep=3pt,
+      line width=0.8pt,
+      ver/.style={rotate=90, child anchor=north, parent anchor=south, anchor=center},
+      % per-level widths applied per node (reliable inside for tree)
+      if level=1{text width=19em, font=\normalsize}{},
+      if level=2{text width=33em, font=\normalsize}{},
+    },
+  },
+}
