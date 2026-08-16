@@ -290,6 +290,145 @@ def _findings_html() -> str:
     return f'<div class="findings"><b>What this run shows (toy, n=4/split).</b> {line1}{line2}</div>'
 
 
+ASCII_ART = """   SWAPPABLE                         FIXED YARDSTICK  (3 families, stubs today)
+   frontier brains                   VLA        LWM         WAM
+   GPT Claude Gemini GLM ...         (action)   (latent)    (future)
+        |                               |          |           |
+        | enters HIGH:                  +- adapter -+- adapter -+   <- only per-family code
+        | frozen SkillAPI                            |
+        | move_to/pick/place            enters LOW: Policy.act -> low-level action
+        |                                            |
+        +---------------+               +------------+
+              TWO ENTRY  v               v  HEIGHTS
+                   ======================================
+                   |   ONE FROZEN EXECUTOR + ENV        |  <- (1) single convergence point
+                   |   DROID / Franka closed loop       |     everything below is shared + frozen
+                   ==================+===================
+                                     v
+                     OOD switch: normal | transparent | clutter
+                                     v
+                     METRICS: TSR . LHCR . RSR . SPR
+                     dTSR = TSR(OOD) - TSR(normal)
+                     WAS  = brain vs VLA baseline     <- (3) VLA = the denominator
+
+   ALL ZERO-SHOT (no training): VLA, LWM, WAM, and every frontier brain run FROZEN."""
+
+
+def _architecture_html() -> str:
+    """Tab 4: the system design as an expandable taxonomy tree (root -> stages -> items)."""
+    return f"""
+  <h2>System design <span class="h2sub">one frozen zero-shot pipeline &middot; click any stage to expand
+      (top-to-bottom = the flow)</span></h2>
+  <div class="zs-banner">&#129482; <b>ZERO-SHOT - no training.</b> Every contestant runs <b>frozen</b>
+     (inference only): the 3 families (VLA, LWM, WAM) and all frontier brains. No fine-tuning, no gradient
+     steps, no reward learning - the only per-family code is a thin adapter.</div>
+
+  <div class="figure">
+    <div class="tree">
+      <div class="root">&#129470; RobotSurviveBench<br>one frozen zero-shot pipeline</div>
+      <div class="branches">
+
+        <div class="branch d1">
+          <div class="bnode">&#129504; Contestants &middot; frontier brains<span class="sn">swap</span>
+            <small>enter HIGH via the frozen SkillAPI (move_to / pick / place); all zero-shot</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>gemini-er2</b> - robot-specialized, vision <span class="ct">[wired]</span></span>
+            <span class="leaf"><b>Kimi</b> / <b>Qwen</b> - open, vision, via Fireworks <span class="ct">[wired]</span></span>
+            <span class="leaf"><b>GLM</b> / <b>DeepSeek</b> - open, text-only here, via Fireworks <span class="ct">[wired]</span></span>
+            <span class="leaf"><b>GPT</b> - closed frontier <span class="ct">[key ok, 0 credits]</span></span>
+            <span class="leaf"><b>Claude</b> - closed frontier <span class="ct">[needs key]</span></span>
+            <span class="leaf"><b>Gemini</b> - closed, vision <span class="ct">[stub]</span></span>
+            <span class="leaf"><b>Llama</b> - open <span class="ct">[not served on this account]</span></span>
+            <span class="leaf"><b>Cosmos-Reason1</b> / <b>RoboBrain2</b> - open VLM <span class="ct">[GPU self-host]</span></span>
+          </div>
+        </div>
+
+        <div class="branch d2">
+          <div class="bnode">&#9889; VLA baseline<span class="sn">yardstick</span>
+            <small>native: action &middot; adapter: cross-embodiment &middot; the WAS denominator &middot; zero-shot</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>OpenVLA</b> - open-source VLA</span>
+            <span class="leaf"><b>Octo</b> - open generalist policy</span>
+            <span class="leaf"><b>pi0 / pi0.5</b> - VLA flow model</span>
+            <span class="leaf"><b>GR00T</b> - humanoid foundation model</span>
+            <span class="leaf"><b>Gemini Robotics</b> - VLA in the physical world</span>
+            <span class="leaf"><b>Helix</b> - Figure humanoid VLA</span>
+            <span class="leaf"><b>code</b> - <code>baselines/base.py::Pi0Fast</code> <span class="ct">[stub]</span></span>
+          </div>
+        </div>
+
+        <div class="branch d3">
+          <div class="bnode">&#129513; LWM baseline<span class="sn">latent</span>
+            <small>native: latent z(obs) &middot; adapter: encoder-as-cost MPC &middot; zero-shot</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>I-JEPA</b> - image joint-embedding predictive</span>
+            <span class="leaf"><b>V-JEPA</b> / <b>V-JEPA2</b> - video JEPA</span>
+            <span class="leaf"><b>MC-JEPA</b> - motion + content JEPA</span>
+            <span class="leaf"><b>H-JEPA</b> - hierarchical JEPA</span>
+            <span class="leaf"><b>adapter</b> - action = argmin ||z(goal) - z(pred)||</span>
+            <span class="leaf"><b>code</b> - <code>baselines/base.py::VJepa2AC</code> <span class="ct">[stub]</span></span>
+          </div>
+        </div>
+
+        <div class="branch d4">
+          <div class="bnode">&#127916; WAM baseline<span class="sn">future</span>
+            <small>native: predicted future &middot; adapter: planner + scripted PID &middot; zero-shot</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>DreamZero</b> - world-action model</span>
+            <span class="leaf"><b>Fast-WAM</b> - fast world-action model</span>
+            <span class="leaf"><b>&#964;0-WM</b> - tau0 world model</span>
+            <span class="leaf"><b>UVA</b> - Unified Video Action</span>
+            <span class="leaf"><b>adapter</b> - rollout futures, plan, track waypoints</span>
+            <span class="leaf"><b>code</b> - <code>baselines/base.py::DreamZero</code> <span class="ct">[stub]</span></span>
+          </div>
+        </div>
+
+        <div class="branch d5">
+          <div class="bnode">&#10052; Frozen executor + env<span class="sn">converge</span>
+            <small>(1) the single convergence point; everything below is shared + frozen</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>DROID / Franka closed loop</b> - identical for every contestant (fairness)</span>
+            <span class="leaf"><b>brains enter HIGH</b> - through the frozen SkillAPI</span>
+            <span class="leaf"><b>families enter LOW</b> - through Policy.act -&gt; low-level action</span>
+            <span class="leaf"><b>OOD: normal</b> - clean scene</span>
+            <span class="leaf"><b>OOD: transparent</b> - glassy / reflective (wipes the colour cue)</span>
+            <span class="leaf"><b>OOD: clutter</b> - dense occlusion; observation-space only, stays zero-shot</span>
+          </div>
+        </div>
+
+        <div class="branch d6">
+          <div class="bnode">&#128202; Metrics<span class="sn">score</span>
+            <small>behavioural TSR / LHCR / RSR / SPR; headline dTSR; WAS</small></div>
+          <div class="leaves">
+            <span class="leaf"><b>TSR</b> - task success rate</span>
+            <span class="leaf"><b>LHCR</b> - long-horizon completion rate</span>
+            <span class="leaf"><b>RSR</b> - recovery success rate</span>
+            <span class="leaf"><b>SPR</b> - safety preservation rate</span>
+            <span class="leaf"><b>dTSR</b> = TSR(OOD) - TSR(normal) <span class="ct">- HEADLINE: did the edge survive?</span></span>
+            <span class="leaf"><b>WAS</b> = brain vs VLA baseline <span class="ct">- (3) VLA is the denominator</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="treekey">
+      <span class="d1"><i></i>contestants</span><span class="d2"><i></i>VLA</span><span class="d3"><i></i>LWM</span>
+      <span class="d4"><i></i>WAM</span><span class="d5"><i></i>executor + OOD</span><span class="d6"><i></i>metrics</span>
+    </div>
+  </div>
+
+  <div class="cap">Read top-to-bottom = the pipeline. <b>(2) Two entry heights</b>: brains plug in HIGH
+     (SkillAPI), the 3 families plug in LOW (Policy.act); both meet at <b>(1) one frozen executor</b>.
+     <b>(3) VLA</b> is the WAS denominator (the yardstick). <b>(4) Honest</b>: the 3 families are stubs
+     today - only the thin adapter is code. <b>Everything is ZERO-SHOT</b> (frozen, no training).</div>
+
+  <details class="asciibox">
+    <summary>Show the ASCII version</summary>
+    <pre>{_esc(ASCII_ART)}</pre>
+  </details>
+"""
+
+
 def build_html() -> str:
     roster = roster_context()
     n_wired = sum(1 for r in roster if r["wired"] and r["name"] != "mock")
@@ -300,12 +439,12 @@ def build_html() -> str:
 <title>RobotSurviveBench - demo dashboard</title>
 <style>{_CSS}</style>{_THEME_HEAD}</head>
 <body>
-{_THEME_BTN}
 <header>
   <h1>RobotSurviveBench <span class="sub">demo dashboard</span></h1>
   <p class="tagline">Zero-shot robotic-execution benchmark: does a brain's competence
      <strong>survive an out-of-distribution surprise?</strong> Headline = dTSR.</p>
   <div class="stats">
+    <span class="stat zs"><b>ZERO-SHOT</b> no training</span>
     <span class="stat"><b>{len(roster)}</b> models in roster</span>
     <span class="stat"><b>{n_wired}</b> wired</span>
     <span class="stat"><b>{n_scored}</b> with scores</span>
@@ -313,24 +452,33 @@ def build_html() -> str:
   </div>
 </header>
 
-<section>
-  <h2>1 &middot; Dataset <span class="h2sub">what the brain is scored against (5 different-type LIBERO frames)</span></h2>
+<nav class="tabs" role="tablist" aria-label="dashboard sections">
+  <button class="tab" role="tab" data-tab="dataset" aria-selected="true">1 &middot; Dataset</button>
+  <button class="tab" role="tab" data-tab="metrics" aria-selected="false">2 &middot; Metrics</button>
+  <button class="tab" role="tab" data-tab="models" aria-selected="false">3 &middot; Models</button>
+  <button class="tab" role="tab" data-tab="arch" aria-selected="false">4 &middot; System design</button>
+  {_THEME_BTN}
+</nav>
+
+<section class="panel active" id="panel-dataset">
+  <h2>Dataset <span class="h2sub">what the brain is scored against (5 different-type LIBERO frames)</span></h2>
   <p class="lead">Each frame is a real Franka agent-view from a different LIBERO suite. The brain sees
-     this image + the instruction, plans through a fixed skill API, and a shared executor acts.</p>
+     this image + the instruction, plans through a fixed skill API, and a shared executor acts.
+     Every contestant runs <b>zero-shot</b> (frozen, no training).</p>
   {_dataset_cards()}
 </section>
 
-<section>
-  <h2>2 &middot; Metrics <span class="h2sub">the 10-metric suite; only the 4 behavioural ones are computable for action-only brains</span></h2>
+<section class="panel" id="panel-metrics">
+  <h2>Metrics <span class="h2sub">the 10-metric suite; only the 4 behavioural ones are computable for action-only brains</span></h2>
   <p class="lead">Predictive + calibration metrics need a prediction / probability head that a VLA or
      skill-API brain does not expose, so they are out of scope for this zero-shot execution benchmark.</p>
   {_metrics_table()}
 </section>
 
-<section>
-  <h2>3 &middot; Models <span class="h2sub">the frontier-brain roster; scores fill in as API keys arrive</span></h2>
-  <p class="lead">Contestants are swapped through one fixed executor + skill API. Wired today:
-     <code>gemini-er2</code> (vision) and <code>glm</code> / <code>kimi</code> / <code>qwen</code> /
+<section class="panel" id="panel-models">
+  <h2>Models <span class="h2sub">the frontier-brain roster; scores fill in as API keys arrive</span></h2>
+  <p class="lead">Contestants are swapped through one fixed executor + skill API, all <b>zero-shot</b>. Wired
+     today: <code>gemini-er2</code> (vision) and <code>glm</code> / <code>kimi</code> / <code>qwen</code> /
      <code>deepseek</code> (via one Fireworks key); the rest are stubs awaiting a key.</p>
   <div class="caveat"><b>Vision-required toy.</b> The toy <code>state_text</code> no longer gives positions:
      a red and a blue mug sit at left/right (side randomised per seed) and the brain may refer to a mug by
@@ -347,6 +495,12 @@ def build_html() -> str:
      <code>data/results/*.jsonl</code>; metrics from the ACTION-ATLAS proposal (p2 5.2-5.6).
      Regenerate: <code>python docs/dashboard.py</code>.</p>
 </section>
+
+<section class="panel" id="panel-arch">
+  {_architecture_html()}
+</section>
+{_TAB_SCRIPT}
+{_TREE_SCRIPT}
 {_THEME_SCRIPT}
 </body></html>
 """
@@ -376,9 +530,9 @@ _CSS = """
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:0 0 60px}
-.themebtn{position:fixed;top:14px;right:16px;z-index:50;cursor:pointer;background:var(--btn-bg);
+.themebtn{margin-left:auto;cursor:pointer;background:var(--btn-bg);
   color:var(--fg);border:1px solid var(--btn-bd);border-radius:20px;padding:6px 12px;font-size:13px;
-  font-weight:600;box-shadow:0 1px 4px var(--shadow)}
+  font-weight:600}
 header{padding:28px 28px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--header-a),var(--header-b))}
 h1{margin:0;font-size:26px}h1 .sub{color:var(--acc);font-weight:500;font-size:16px}
 .tagline{color:var(--mut);margin:8px 0 14px;max-width:820px}
@@ -429,7 +583,60 @@ tr.derived td{background:var(--derived-bg)}
   color:var(--caveat-fg);font-size:13px;line-height:1.55}
 .caveat b{color:var(--acc)}
 .foot{color:var(--mut);font-size:12px;margin-top:14px}
-@media (max-width:640px){header,section{padding-left:16px;padding-right:16px}.themebtn{top:10px;right:10px}}
+/* tabs */
+.tabs{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+  background:var(--bg);border-bottom:1px solid var(--line);padding:8px 28px}
+.tab{cursor:pointer;background:transparent;border:1px solid transparent;border-radius:8px 8px 0 0;
+  padding:8px 14px;font-size:14px;font-weight:600;color:var(--mut)}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--fg);background:var(--card);border-color:var(--line)}
+.panel{display:none}
+.panel.active{display:block}
+/* zero-shot emphasis */
+.stat.zs b{color:var(--ok)}
+.zs-banner{background:var(--findings-bg);border:1px solid var(--findings-bd);color:var(--findings-fg);
+  border-radius:8px;padding:11px 14px;margin:6px 0 18px;font-size:13px;line-height:1.55}
+.zs-banner b{color:var(--findings-strong)}
+/* system-design taxonomy tree (expandable; ported from the survey component) */
+.figure{margin:4px 0 0}
+.treebar{display:flex;justify-content:flex-end;margin:0 0 12px}
+.treebar .fbtn{cursor:pointer;font:600 12px ui-monospace,Menlo,monospace;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--mut)}
+.treebar .fbtn:hover{color:var(--fg)}
+.tree{display:flex;gap:16px;align-items:stretch}
+.tree .root{flex:none;width:172px;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-weight:650;font-size:13.5px;line-height:1.3;border:1.5px solid var(--acc);
+  background:color-mix(in srgb,var(--acc) 12%,var(--card));border-radius:12px;padding:14px;color:var(--fg)}
+.tree .branches{flex:1;display:flex;flex-direction:column;gap:11px;min-width:0}
+.branch{display:flex;gap:12px;align-items:flex-start;border-left:2px solid var(--line);padding-left:12px}
+.bnode{flex:none;width:236px;font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:650;border-radius:9px;
+  padding:9px 11px;background:color-mix(in srgb,var(--h) 16%,var(--card));border-left:3px solid var(--h);
+  color:var(--fg);cursor:pointer;user-select:none}
+.bnode:hover{filter:brightness(1.05)}
+.bnode small{display:block;font-weight:400;font-size:10px;color:var(--mut);margin-top:3px;line-height:1.35;white-space:normal}
+.bnode .sn{font-size:11px;font-weight:700;color:var(--h);margin-left:5px}
+.btgl{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:4px;background:var(--h);
+  color:#fff;font-size:12px;font-weight:800;line-height:1;margin-right:7px;vertical-align:middle;flex:none}
+.leaves{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;padding-top:2px}
+.leaf{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;padding:5px 9px;border-radius:7px;color:var(--fg);
+  background:color-mix(in srgb,var(--h) 10%,var(--card));border:1px solid color-mix(in srgb,var(--h) 40%,transparent);
+  white-space:normal;line-height:1.35;display:block;text-decoration:none}
+.leaf b{font-weight:700}
+.leaf .ct{color:var(--mut);font-weight:400}
+a.leaf:hover{background:color-mix(in srgb,var(--h) 20%,var(--card))}
+.branch.collapsed .leaves{display:none}
+.d1{--h:#3b82f6}.d2{--h:#0ea5a2}.d3{--h:#e0871e}.d4{--h:#8b5cf6}.d5{--h:#db2777}.d6{--h:#22a06b}
+.treekey{display:flex;flex-wrap:wrap;gap:8px 14px;margin:12px 2px 0}
+.treekey span{display:inline-flex;align-items:center;gap:6px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--mut)}
+.treekey i{width:11px;height:11px;border-radius:3px;background:var(--h);flex:none}
+.cap{color:var(--mut);font-size:12.5px;margin:14px 0 0;line-height:1.6;max-width:980px}
+.cap b{color:var(--fg)}
+.asciibox{margin:16px 0 0}
+.asciibox>summary{cursor:pointer;color:var(--mut);font-size:13px}
+.asciibox pre{overflow-x:auto;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;
+  padding:12px;font-size:12px;line-height:1.35;color:var(--fg)}
+@media(max-width:720px){.tree{flex-direction:column}.tree .root{width:auto}.branch{flex-direction:column;gap:8px}.bnode{width:auto}}
+@media (max-width:640px){header,section,.tabs{padding-left:14px;padding-right:14px}}
 """
 
 # Applied in <head> BEFORE paint so a saved dark choice does not flash light first.
@@ -451,6 +658,57 @@ _THEME_SCRIPT = """<script>
     else{document.documentElement.setAttribute('data-theme','dark');}
     try{localStorage.setItem('rsb-theme',dark?'light':'dark');}catch(e){}
     label();
+  });
+})();
+</script>"""
+
+# Tab switcher: show one panel at a time, remember the choice.
+_TAB_SCRIPT = """<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var panels=[].slice.call(document.querySelectorAll('.panel'));
+  function show(name){
+    tabs.forEach(function(t){t.setAttribute('aria-selected', String(t.dataset.tab===name));});
+    panels.forEach(function(p){p.classList.toggle('active', p.id==='panel-'+name);});
+    try{localStorage.setItem('rsb-tab',name);}catch(e){}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
+  var saved='dataset';try{saved=localStorage.getItem('rsb-tab')||'dataset';}catch(e){}
+  if(!document.getElementById('panel-'+saved))saved='dataset';
+  show(saved);
+})();
+</script>"""
+
+# Expandable taxonomy tree for the System-design tab (ported from the survey's tree.js).
+_TREE_SCRIPT = """<script>
+(function(){
+  function set(br,collapsed){
+    br.classList.toggle('collapsed',collapsed);
+    var t=br.querySelector('.bnode > .btgl');
+    if(t)t.textContent=collapsed?'+':'\\u2212';
+  }
+  document.querySelectorAll('.tree').forEach(function(tree){
+    var branches=Array.prototype.filter.call(tree.querySelectorAll('.branch'),function(br){
+      return br.querySelector('.bnode') && br.querySelector('.leaves');});
+    if(!branches.length)return;
+    branches.forEach(function(br){
+      var bn=br.querySelector('.bnode');
+      var t=document.createElement('span');t.className='btgl';t.textContent='+';
+      bn.insertBefore(t,bn.firstChild);
+      bn.addEventListener('click',function(){set(br,!br.classList.contains('collapsed'));sync();});
+      set(br,true);
+    });
+    var bar=document.createElement('div');bar.className='treebar';
+    var btn=document.createElement('button');btn.type='button';btn.className='fbtn';
+    bar.appendChild(btn);
+    var fig=tree.closest('.figure')||tree;
+    fig.parentNode.insertBefore(bar,fig);
+    function sync(){var any=branches.some(function(b){return b.classList.contains('collapsed');});
+      btn.textContent=any?'\\uFF0B expand all':'\\uFF0D collapse all';}
+    btn.addEventListener('click',function(){
+      var any=branches.some(function(b){return b.classList.contains('collapsed');});
+      branches.forEach(function(b){set(b,!any);});sync();});
+    sync();
   });
 })();
 </script>"""
