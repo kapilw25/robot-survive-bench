@@ -290,39 +290,48 @@ def _findings_html() -> str:
     return f'<div class="findings"><b>What this run shows (toy, n=4/split).</b> {line1}{line2}</div>'
 
 
-ASCII_ART = """   SWAPPABLE                         FIXED YARDSTICK  (3 families, stubs today)
-   frontier brains                   VLA        LWM         WAM
-   GPT Claude Gemini GLM ...         (action)   (latent)    (future)
-        |                               |          |           |
-        | enters HIGH:                  +- adapter -+- adapter -+   <- only per-family code
-        | frozen SkillAPI                            |
-        | move_to/pick/place            enters LOW: Policy.act -> low-level action
-        |                                            |
-        +---------------+               +------------+
-              TWO ENTRY  v               v  HEIGHTS
-                   ======================================
-                   |   ONE FROZEN EXECUTOR + ENV        |  <- (1) single convergence point
-                   |   DROID / Franka closed loop       |     everything below is shared + frozen
-                   ==================+===================
-                                     v
-                     OOD switch: normal | transparent | clutter
-                                     v
-                     METRICS: TSR . LHCR . RSR . SPR
-                     dTSR = TSR(OOD) - TSR(normal)
-                     WAS  = brain vs VLA baseline     <- (3) VLA = the denominator
-
-   ALL ZERO-SHOT (no training): VLA, LWM, WAM, and every frontier brain run FROZEN."""
+# Colorful Mermaid flowchart shown at the top of the System-design tab (the FLOW: brains + the 3
+# families MERGE at one frozen executor -> OOD -> metrics). Rendered client-side via mermaid (CDN).
+MERMAID_SRC = """flowchart TD
+  subgraph SW["SWAPPABLE - enter HIGH via the frozen SkillAPI"]
+    B["🧠 Frontier brains (zero-shot)<br/>GPT · Claude · Gemini · GLM · Kimi · Qwen · DeepSeek · Llama · Cosmos · RoboBrain"]
+  end
+  subgraph YS["FIXED YARDSTICK - enter LOW via Policy.act · stubs · zero-shot"]
+    VLA["⚡ VLA · action<br/>OpenVLA · Octo · pi0/pi0.5 · GR00T · Gemini Robotics · Helix"]
+    LWM["🧩 LWM · latent<br/>I-JEPA · V-JEPA · V-JEPA2 · MC-JEPA · H-JEPA"]
+    WAM["🎬 WAM · future<br/>DreamZero · Fast-WAM · τ0-WM · UVA"]
+  end
+  B -->|"SkillAPI: move_to / pick / place"| EX
+  VLA -->|"cross-embodiment adapter"| EX
+  LWM -->|"encoder-as-cost MPC"| EX
+  WAM -->|"planner + scripted PID"| EX
+  EX["❄ ONE FROZEN EXECUTOR + ENV<br/>DROID / Franka closed loop<br/>(1) single convergence point"]
+  EX --> OOD["🌀 OOD switch (observation-space only)<br/>normal · transparent · clutter"]
+  OOD --> M["📊 METRICS<br/>TSR · LHCR · RSR · SPR<br/>dTSR = TSR OOD minus TSR normal (headline)<br/>WAS = brain vs VLA baseline (VLA = denominator)"]
+  classDef brains fill:#3b82f6,color:#fff,stroke:#1e3a8a,stroke-width:1px;
+  classDef vla fill:#0ea5a2,color:#fff,stroke:#0f766e,stroke-width:1px;
+  classDef lwm fill:#e0871e,color:#fff,stroke:#9a5b12,stroke-width:1px;
+  classDef wam fill:#8b5cf6,color:#fff,stroke:#5b21b6,stroke-width:1px;
+  classDef exec fill:#db2777,color:#fff,stroke:#9d174d,stroke-width:2px;
+  classDef ood fill:#6366f1,color:#fff,stroke:#3730a3,stroke-width:1px;
+  classDef metric fill:#22a06b,color:#fff,stroke:#166534,stroke-width:1px;
+  class B brains; class VLA vla; class LWM lwm; class WAM wam; class EX exec; class OOD ood; class M metric;"""
 
 
 def _architecture_html() -> str:
-    """Tab 4: the system design as an expandable taxonomy tree (root -> stages -> items)."""
+    """Tab 4: colorful mermaid FLOW (where brains + families merge) + expandable drill-down tree."""
     return f"""
-  <h2>System design <span class="h2sub">one frozen zero-shot pipeline &middot; click any stage to expand
-      (top-to-bottom = the flow)</span></h2>
+  <h2>System design <span class="h2sub">the flow (where everything merges) + an expandable
+      drill-down &middot; all zero-shot</span></h2>
   <div class="zs-banner">&#129482; <b>ZERO-SHOT - no training.</b> Every contestant runs <b>frozen</b>
      (inference only): the 3 families (VLA, LWM, WAM) and all frontier brains. No fine-tuning, no gradient
      steps, no reward learning - the only per-family code is a thin adapter.</div>
 
+  <div class="flowlabel">The flow &middot; brains + the 3 families merge at ONE frozen executor</div>
+  <div class="mmwrap" id="mmhost"><div class="mmloading">rendering flow diagram...</div></div>
+  <script type="application/x-mermaid" id="mmsrc">{MERMAID_SRC}</script>
+
+  <div class="flowlabel">Drill down &middot; click any stage to expand its members</div>
   <div class="figure">
     <div class="tree">
       <div class="root">&#129470; RobotSurviveBench<br>one frozen zero-shot pipeline</div>
@@ -417,15 +426,11 @@ def _architecture_html() -> str:
     </div>
   </div>
 
-  <div class="cap">Read top-to-bottom = the pipeline. <b>(2) Two entry heights</b>: brains plug in HIGH
-     (SkillAPI), the 3 families plug in LOW (Policy.act); both meet at <b>(1) one frozen executor</b>.
-     <b>(3) VLA</b> is the WAS denominator (the yardstick). <b>(4) Honest</b>: the 3 families are stubs
-     today - only the thin adapter is code. <b>Everything is ZERO-SHOT</b> (frozen, no training).</div>
-
-  <details class="asciibox">
-    <summary>Show the ASCII version</summary>
-    <pre>{_esc(ASCII_ART)}</pre>
-  </details>
+  <div class="cap">The <b>flow</b> above shows the merge: brains + all 3 families reduce to a low-level
+     action into <b>(1) one frozen executor</b>. <b>(2) Two entry heights</b>: brains plug in HIGH
+     (SkillAPI), the families plug in LOW (Policy.act). <b>(3) VLA</b> is the WAS denominator (the
+     yardstick). <b>(4) Honest</b>: the 3 families are stubs today - only the thin adapter is code.
+     <b>Everything is ZERO-SHOT</b> (frozen, no training).</div>
 """
 
 
@@ -501,6 +506,7 @@ def build_html() -> str:
 </section>
 {_TAB_SCRIPT}
 {_TREE_SCRIPT}
+{_MERMAID_SCRIPT}
 {_THEME_SCRIPT}
 </body></html>
 """
@@ -631,10 +637,10 @@ a.leaf:hover{background:color-mix(in srgb,var(--h) 20%,var(--card))}
 .treekey i{width:11px;height:11px;border-radius:3px;background:var(--h);flex:none}
 .cap{color:var(--mut);font-size:12.5px;margin:14px 0 0;line-height:1.6;max-width:980px}
 .cap b{color:var(--fg)}
-.asciibox{margin:16px 0 0}
-.asciibox>summary{cursor:pointer;color:var(--mut);font-size:13px}
-.asciibox pre{overflow-x:auto;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;
-  padding:12px;font-size:12px;line-height:1.35;color:var(--fg)}
+.flowlabel{font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--mut);text-transform:uppercase;margin:16px 0 6px}
+.mmwrap{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 4px;overflow-x:auto;text-align:center}
+.mmwrap svg{max-width:100%;height:auto}
+.mmloading{color:var(--mut);font-size:12px;font-family:ui-monospace,Menlo,monospace;padding:20px}
 @media(max-width:720px){.tree{flex-direction:column}.tree .root{width:auto}.branch{flex-direction:column;gap:8px}.bnode{width:auto}}
 @media (max-width:640px){header,section,.tabs{padding-left:14px;padding-right:14px}}
 """
@@ -671,6 +677,7 @@ _TAB_SCRIPT = """<script>
     tabs.forEach(function(t){t.setAttribute('aria-selected', String(t.dataset.tab===name));});
     panels.forEach(function(p){p.classList.toggle('active', p.id==='panel-'+name);});
     try{localStorage.setItem('rsb-tab',name);}catch(e){}
+    if(name==='arch' && window.__renderArchMermaid) window.__renderArchMermaid();
   }
   tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
   var saved='dataset';try{saved=localStorage.getItem('rsb-tab')||'dataset';}catch(e){}
@@ -710,6 +717,33 @@ _TREE_SCRIPT = """<script>
       branches.forEach(function(b){set(b,!any);});sync();});
     sync();
   });
+})();
+</script>"""
+
+# Mermaid (CDN) for the System-design flow. Rendered lazily when the arch tab is first shown
+# (mermaid mis-sizes diagrams inside a display:none panel), colours come from the diagram's classDefs
+# so it reads in both light and dark themes.
+_MERMAID_SCRIPT = """<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function(){
+  var done=false;
+  function render(){
+    if(done) return;
+    var m=window.mermaid; if(!m) return;
+    var host=document.getElementById('mmhost'), src=document.getElementById('mmsrc');
+    if(!host||!src) return;
+    if(host.offsetParent===null) return;   // panel hidden -> wait until the tab is shown
+    try{
+      m.initialize({startOnLoad:false,securityLevel:'loose',theme:'base',
+        themeVariables:{fontFamily:'ui-monospace,Menlo,monospace',fontSize:'13px',
+          lineColor:'#94a3b8',edgeLabelBackground:'#ffffff',clusterBkg:'transparent',clusterBorder:'#94a3b8'}});
+      done=true;
+      m.render('rsbFlow', src.textContent).then(function(o){host.innerHTML=o.svg;})
+        .catch(function(e){done=false;host.innerHTML='<div class=\\"mmloading\\">diagram failed to render</div>';});
+    }catch(e){done=false;}
+  }
+  window.__renderArchMermaid=render;
+  render();   // handles the case where arch is the default-active tab
 })();
 </script>"""
 
