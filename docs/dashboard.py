@@ -298,8 +298,9 @@ def build_html() -> str:
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RobotSurviveBench - demo dashboard</title>
-<style>{_CSS}</style></head>
+<style>{_CSS}</style>{_THEME_HEAD}</head>
 <body>
+{_THEME_BTN}
 <header>
   <h1>RobotSurviveBench <span class="sub">demo dashboard</span></h1>
   <p class="tagline">Zero-shot robotic-execution benchmark: does a brain's competence
@@ -346,16 +347,39 @@ def build_html() -> str:
      <code>data/results/*.jsonl</code>; metrics from the ACTION-ATLAS proposal (p2 5.2-5.6).
      Regenerate: <code>python docs/dashboard.py</code>.</p>
 </section>
+{_THEME_SCRIPT}
 </body></html>
 """
 
 
 _CSS = """
-:root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa4b2;--acc:#ffd23f;
---ok:#37d67a;--no:#ef5350;--pos:#37d67a;--neg:#ef5350;--open:#4aa3ff;--closed:#b48cff;}
+/* LIGHT is the default (bare :root); DARK overrides under [data-theme=dark]. */
+:root{
+  --bg:#f6f7f9;--card:#ffffff;--line:#dfe3ea;--rowline:#eef1f5;--hover:#eef3f9;
+  --fg:#1a1f29;--mut:#5c6672;--acc:#a4670a;
+  --ok:#1a7f4b;--no:#c62828;--pos:#1a7f4b;--neg:#c62828;--open:#1565c0;--closed:#6a3fb5;
+  --code-bg:#eef1f5;--code-fg:#8a5a00;--derived-bg:#fbf4e2;
+  --header-a:#ffffff;--header-b:#eceff4;
+  --caveat-bg:#fdf6e3;--caveat-bd:#e6d8a8;--caveat-fg:#6b5510;
+  --findings-bg:#ecfaf1;--findings-bd:#bce3cb;--findings-fg:#155c33;--findings-strong:#148a4f;
+  --limit:#b0532a;--btn-bg:#ffffff;--btn-bd:#dfe3ea;--imgbg:#e9edf2;--shadow:rgba(20,30,50,.12);
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115;--card:#171a21;--line:#262b36;--rowline:#1c212b;--hover:#1a1f29;
+  --fg:#e6e9ef;--mut:#9aa4b2;--acc:#ffd23f;
+  --ok:#37d67a;--no:#ef5350;--pos:#37d67a;--neg:#ef5350;--open:#4aa3ff;--closed:#b48cff;
+  --code-bg:#0b0d12;--code-fg:#e6c96b;--derived-bg:#15130a;
+  --header-a:#141821;--header-b:#0f1115;
+  --caveat-bg:#1c1608;--caveat-bd:#4a3b12;--caveat-fg:#d9c9a3;
+  --findings-bg:#0f2016;--findings-bd:#245038;--findings-fg:#bfe6cf;--findings-strong:#7fe0a3;
+  --limit:#d98b6b;--btn-bg:#171a21;--btn-bd:#2a3140;--imgbg:#000;--shadow:rgba(0,0,0,.4);
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:0 0 60px}
-header{padding:28px 28px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#141821,#0f1115)}
+.themebtn{position:fixed;top:14px;right:16px;z-index:50;cursor:pointer;background:var(--btn-bg);
+  color:var(--fg);border:1px solid var(--btn-bd);border-radius:20px;padding:6px 12px;font-size:13px;
+  font-weight:600;box-shadow:0 1px 4px var(--shadow)}
+header{padding:28px 28px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--header-a),var(--header-b))}
 h1{margin:0;font-size:26px}h1 .sub{color:var(--acc);font-weight:500;font-size:16px}
 .tagline{color:var(--mut);margin:8px 0 14px;max-width:820px}
 .tagline strong{color:var(--fg)}
@@ -366,11 +390,11 @@ section{padding:24px 28px;border-bottom:1px solid var(--line)}
 h2{font-size:19px;margin:0 0 4px}
 .h2sub{color:var(--mut);font-weight:400;font-size:13px;display:block;margin-top:2px}
 .lead{color:var(--mut);max-width:900px;margin:6px 0 16px}
-code{background:#0b0d12;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px;color:#e6c96b}
+code{background:var(--code-bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px;color:var(--code-fg)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 .card{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .media{position:relative}
-.card img{width:100%;display:block;aspect-ratio:1/1;object-fit:cover;background:#000}
+.card img{width:100%;display:block;aspect-ratio:1/1;object-fit:cover;background:var(--imgbg)}
 .live{position:absolute;top:8px;left:8px;background:rgba(239,83,80,.92);color:#fff;font-size:11px;
   font-weight:700;letter-spacing:.02em;padding:3px 8px;border-radius:20px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 figcaption{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
@@ -379,34 +403,57 @@ figcaption{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 .task{font-size:12px;color:var(--fg);font-style:italic}
 table{width:100%;border-collapse:collapse;font-size:13px;overflow-x:auto;display:block}
 thead th{text-align:left;color:var(--mut);font-weight:600;border-bottom:1px solid var(--line);padding:8px 10px;white-space:nowrap}
-tbody td{padding:8px 10px;border-bottom:1px solid #1c212b;white-space:nowrap}
-tbody tr:hover{background:#1a1f29}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--rowline);white-space:nowrap}
+tbody tr:hover{background:var(--hover)}
 .abbr{color:var(--acc);font-weight:600}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .small{font-size:11px;color:var(--mut)}
 .note{color:var(--mut)}
 tr.na td{opacity:.62}
-tr.derived td{background:#15130a}
+tr.derived td{background:var(--derived-bg)}
 .pill{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;border:1px solid var(--line);color:var(--mut)}
-.pill.ok{background:rgba(55,214,122,.14);color:var(--ok);border-color:transparent}
-.pill.no{background:rgba(239,83,80,.14);color:var(--no);border-color:transparent}
-.pill.hl{background:rgba(255,210,63,.16);color:var(--acc);border-color:transparent}
-.pill.open{background:rgba(74,163,255,.14);color:var(--open);border-color:transparent}
-.pill.closed{background:rgba(180,140,255,.14);color:var(--closed);border-color:transparent}
+.pill.ok{background:rgba(55,214,122,.16);color:var(--ok);border-color:transparent}
+.pill.no{background:rgba(239,83,80,.16);color:var(--no);border-color:transparent}
+.pill.hl{background:rgba(255,190,40,.20);color:var(--acc);border-color:transparent}
+.pill.open{background:rgba(21,101,192,.14);color:var(--open);border-color:transparent}
+.pill.closed{background:rgba(106,63,181,.14);color:var(--closed);border-color:transparent}
 .pos{color:var(--pos)}.neg{color:var(--neg)}
 .pending{color:var(--mut);font-style:italic}
 .idcell{white-space:normal;min-width:240px;max-width:320px}
-.findings{background:#0f2016;border:1px solid #245038;border-radius:8px;padding:11px 14px;margin:16px 0 0;
-  color:#bfe6cf;font-size:13px;line-height:1.55}
-.findings b{color:#7fe0a3}
-.limit{display:block;margin-top:3px;color:#d98b6b;font-size:11.5px;line-height:1.4}
+.findings{background:var(--findings-bg);border:1px solid var(--findings-bd);border-radius:8px;padding:11px 14px;margin:16px 0 0;
+  color:var(--findings-fg);font-size:13px;line-height:1.55}
+.findings b{color:var(--findings-strong)}
+.limit{display:block;margin-top:3px;color:var(--limit);font-size:11.5px;line-height:1.4}
 .empty{color:var(--mut)}
-.caveat{background:#1c1608;border:1px solid #4a3b12;border-radius:8px;padding:10px 14px;margin:0 0 16px;
-  color:#d9c9a3;font-size:13px;line-height:1.55}
+.caveat{background:var(--caveat-bg);border:1px solid var(--caveat-bd);border-radius:8px;padding:10px 14px;margin:0 0 16px;
+  color:var(--caveat-fg);font-size:13px;line-height:1.55}
 .caveat b{color:var(--acc)}
 .foot{color:var(--mut);font-size:12px;margin-top:14px}
-@media (max-width:640px){header,section{padding-left:16px;padding-right:16px}}
+@media (max-width:640px){header,section{padding-left:16px;padding-right:16px}.themebtn{top:10px;right:10px}}
 """
+
+# Applied in <head> BEFORE paint so a saved dark choice does not flash light first.
+_THEME_HEAD = ("<script>(function(){try{if(localStorage.getItem('rsb-theme')==='dark')"
+               "document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>")
+
+_THEME_BTN = '<button id="themeToggle" class="themebtn" aria-label="Toggle light or dark theme">Dark</button>'
+
+# Toggle handler (kept as a plain string so its braces are literal inside the f-string page).
+_THEME_SCRIPT = """<script>
+(function(){
+  var b=document.getElementById('themeToggle');
+  function label(){var dark=document.documentElement.getAttribute('data-theme')==='dark';
+    b.textContent=dark?'☀ Light':'\U0001F319 Dark';}
+  label();
+  b.addEventListener('click',function(){
+    var dark=document.documentElement.getAttribute('data-theme')==='dark';
+    if(dark){document.documentElement.removeAttribute('data-theme');}
+    else{document.documentElement.setAttribute('data-theme','dark');}
+    try{localStorage.setItem('rsb-theme',dark?'light':'dark');}catch(e){}
+    label();
+  });
+})();
+</script>"""
 
 
 def main() -> None:
