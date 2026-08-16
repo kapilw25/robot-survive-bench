@@ -1,0 +1,9 @@
+# Default run config for rsbench (override on the CLI).
+run:
+  brain: mock            # see src/rsbench/brains/registry.py for names
+  suite: mock            # mock | libero_long
+  episodes: 1
+  seed: 0
+  ood: normal            # normal | transparent | clutter | all
+  max_steps: 20
+  out: data/results/run.jsonl

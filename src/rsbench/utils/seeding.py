@@ -1,0 +1,15 @@
+"""Deterministic seeding so runs are reproducible (pinned per plan reproducibility bar)."""
+from __future__ import annotations
+
+import os
+import random
+
+
+def set_seed(seed: int) -> None:
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    try:  # optional deps: only seed if present
+        import numpy as np  # type: ignore
+        np.random.seed(seed)
+    except Exception:
+        pass

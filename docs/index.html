@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RobotSurviveBench - demo dashboard</title>
+<style>
+:root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa4b2;--acc:#ffd23f;
+--ok:#37d67a;--no:#ef5350;--pos:#37d67a;--neg:#ef5350;--open:#4aa3ff;--closed:#b48cff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:0 0 60px}
+header{padding:28px 28px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#141821,#0f1115)}
+h1{margin:0;font-size:26px}h1 .sub{color:var(--acc);font-weight:500;font-size:16px}
+.tagline{color:var(--mut);margin:8px 0 14px;max-width:820px}
+.tagline strong{color:var(--fg)}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--mut);font-size:13px}
+.stat b{color:var(--acc);font-size:16px}
+section{padding:24px 28px;border-bottom:1px solid var(--line)}
+h2{font-size:19px;margin:0 0 4px}
+.h2sub{color:var(--mut);font-weight:400;font-size:13px;display:block;margin-top:2px}
+.lead{color:var(--mut);max-width:900px;margin:6px 0 16px}
+code{background:#0b0d12;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px;color:#e6c96b}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.media{position:relative}
+.card img{width:100%;display:block;aspect-ratio:1/1;object-fit:cover;background:#000}
+.live{position:absolute;top:8px;left:8px;background:rgba(239,83,80,.92);color:#fff;font-size:11px;
+  font-weight:700;letter-spacing:.02em;padding:3px 8px;border-radius:20px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+figcaption{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.tag{color:var(--acc);font-weight:600;font-size:13px}
+.why{color:var(--mut);font-size:12px}
+.task{font-size:12px;color:var(--fg);font-style:italic}
+table{width:100%;border-collapse:collapse;font-size:13px;overflow-x:auto;display:block}
+thead th{text-align:left;color:var(--mut);font-weight:600;border-bottom:1px solid var(--line);padding:8px 10px;white-space:nowrap}
+tbody td{padding:8px 10px;border-bottom:1px solid #1c212b;white-space:nowrap}
+tbody tr:hover{background:#1a1f29}
+.abbr{color:var(--acc);font-weight:600}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.small{font-size:11px;color:var(--mut)}
+.note{color:var(--mut)}
+tr.na td{opacity:.62}
+tr.derived td{background:#15130a}
+.pill{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;border:1px solid var(--line);color:var(--mut)}
+.pill.ok{background:rgba(55,214,122,.14);color:var(--ok);border-color:transparent}
+.pill.no{background:rgba(239,83,80,.14);color:var(--no);border-color:transparent}
+.pill.hl{background:rgba(255,210,63,.16);color:var(--acc);border-color:transparent}
+.pill.open{background:rgba(74,163,255,.14);color:var(--open);border-color:transparent}
+.pill.closed{background:rgba(180,140,255,.14);color:var(--closed);border-color:transparent}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+.pending{color:var(--mut);font-style:italic}
+.idcell{white-space:normal;min-width:240px;max-width:320px}
+.findings{background:#0f2016;border:1px solid #245038;border-radius:8px;padding:11px 14px;margin:16px 0 0;
+  color:#bfe6cf;font-size:13px;line-height:1.55}
+.findings b{color:#7fe0a3}
+.limit{display:block;margin-top:3px;color:#d98b6b;font-size:11.5px;line-height:1.4}
+.empty{color:var(--mut)}
+.caveat{background:#1c1608;border:1px solid #4a3b12;border-radius:8px;padding:10px 14px;margin:0 0 16px;
+  color:#d9c9a3;font-size:13px;line-height:1.55}
+.caveat b{color:var(--acc)}
+.foot{color:var(--mut);font-size:12px;margin-top:14px}
+@media (max-width:640px){header,section{padding-left:16px;padding-right:16px}}
+</style></head>
+<body>
+<header>
+  <h1>RobotSurviveBench <span class="sub">demo dashboard</span></h1>
+  <p class="tagline">Zero-shot robotic-execution benchmark: does a brain's competence
+     <strong>survive an out-of-distribution surprise?</strong> Headline = dTSR.</p>
+  <div class="stats">
+    <span class="stat"><b>12</b> models in roster</span>
+    <span class="stat"><b>5</b> wired</span>
+    <span class="stat"><b>6</b> with scores</span>
+    <span class="stat"><b>4 / 10</b> metrics scored zero-shot</span>
+  </div>
+</header>
+
+<section>
+  <h2>1 &middot; Dataset <span class="h2sub">what the brain is scored against (5 different-type LIBERO frames)</span></h2>
+  <p class="lead">Each frame is a real Franka agent-view from a different LIBERO suite. The brain sees
+     this image + the instruction, plans through a fixed skill API, and a shared executor acts.</p>
+  <div class="grid"><figure class="card"><div class="media"><img src="static/samples/1_spatial.gif" alt="LIBERO-Spatial" loading="lazy"><span class="live">&#9654; rollout</span></div><figcaption><span class="tag">LIBERO-Spatial</span><span class="why">same objects, new spatial arrangements</span><span class="task">"pick up the black bowl next to the cookie box and place it on the plate"</span></figcaption></figure><figure class="card"><div class="media"><img src="static/samples/2_object.gif" alt="LIBERO-Object" loading="lazy"><span class="live">&#9654; rollout</span></div><figcaption><span class="tag">LIBERO-Object</span><span class="why">same layout, unseen objects</span><span class="task">"pick up the orange juice and place it in the basket"</span></figcaption></figure><figure class="card"><div class="media"><img src="static/samples/3_goal.gif" alt="LIBERO-Goal" loading="lazy"><span class="live">&#9654; rollout</span></div><figcaption><span class="tag">LIBERO-Goal</span><span class="why">same objects, new goal/instruction</span><span class="task">"put the bowl on the plate"</span></figcaption></figure><figure class="card"><div class="media"><img src="static/samples/4_long.gif" alt="LIBERO-Long" loading="lazy"><span class="live">&#9654; rollout</span></div><figcaption><span class="tag">LIBERO-Long</span><span class="why">long-horizon, multi-stage tasks</span><span class="task">"put the white mug on the left plate and put the yellow and white mug on the right plate"</span></figcaption></figure><figure class="card"><div class="media"><img src="static/samples/5_long1.gif" alt="LIBERO-Long" loading="lazy"><span class="live">&#9654; rollout</span></div><figcaption><span class="tag">LIBERO-Long</span><span class="why">a second, different long-horizon task</span><span class="task">"put the white mug on the plate and put the chocolate pudding to the right of the plate"</span></figcaption></figure></div>
+</section>
+
+<section>
+  <h2>2 &middot; Metrics <span class="h2sub">the 10-metric suite; only the 4 behavioural ones are computable for action-only brains</span></h2>
+  <p class="lead">Predictive + calibration metrics need a prediction / probability head that a VLA or
+     skill-API brain does not expose, so they are out of scope for this zero-shot execution benchmark.</p>
+  <table class="metrics"><thead><tr><th>group</th><th>abbr</th><th>metric</th><th>formula</th><th>zero-shot?</th><th>note</th></tr></thead><tbody><tr class="scored"><td>Behavioural</td><td class="abbr">TSR</td><td>Task Success Rate</td><td class="mono">N_success / N_total</td><td><span class="pill ok">scored</span></td><td class="note">primary competence signal</td></tr><tr class="scored"><td>Behavioural</td><td class="abbr">LHCR</td><td>Long-Horizon Completion Rate</td><td class="mono">completed subgoals / total subgoals</td><td><span class="pill ok">scored</span></td><td class="note">partial credit on multi-stage tasks</td></tr><tr class="scored"><td>Behavioural</td><td class="abbr">RSR</td><td>Recovery Success Rate</td><td class="mono">recovered / failure events</td><td><span class="pill ok">scored</span></td><td class="note">recover after a perturbation</td></tr><tr class="scored"><td>Behavioural</td><td class="abbr">SPR</td><td>Safety Preservation Rate</td><td class="mono">1 - unsafe episodes / episodes</td><td><span class="pill ok">scored</span></td><td class="note">fraction of safe trajectories</td></tr><tr class="na"><td>Predictive</td><td class="abbr">HSLA</td><td>Hidden-State Localization Acc.</td><td class="mono">correct hidden queries / hidden queries</td><td><span class="pill no">N/A</span></td><td class="note">needs a prediction head</td></tr><tr class="na"><td>Predictive</td><td class="abbr">CSA</td><td>Counterfactual Selection Acc.</td><td class="mono">optimal futures / counterfactual trials</td><td><span class="pill no">N/A</span></td><td class="note">needs future simulation</td></tr><tr class="na"><td>Predictive</td><td class="abbr">FRE</td><td>Future Rollout Error</td><td class="mono">mean d(s_hat_t, s_t)</td><td><span class="pill no">N/A</span></td><td class="note">needs a world model rollout</td></tr><tr class="na"><td>Predictive</td><td class="abbr">ACPE</td><td>Action Consequence Pred. Error</td><td class="mono">mean d(o_hat_i, o_i)</td><td><span class="pill no">N/A</span></td><td class="note">needs consequence prediction</td></tr><tr class="na"><td>Calibration</td><td class="abbr">ECE</td><td>Expected Calibration Error</td><td class="mono">sum |acc(b) - conf(b)| |B_b|/N</td><td><span class="pill no">N/A</span></td><td class="note">needs confidences</td></tr><tr class="na"><td>Calibration</td><td class="abbr">RCS</td><td>Risk-Calibrated Success</td><td class="mono">TSR / (1 + ECE)</td><td><span class="pill no">N/A</span></td><td class="note">needs ECE</td></tr><tr class="derived"><td>Derived</td><td class="abbr">dTSR</td><td>Delta Task Success Rate</td><td class="mono">TSR(OOD) - TSR(normal)</td><td><span class="pill hl">headline</span></td><td class="note">HEADLINE: does the edge survive the OOD surprise?</td></tr><tr class="derived"><td>Derived</td><td class="abbr">WAS</td><td>World Advantage Score</td><td class="mono">(success_model - success_VLAref) / (success_VLAref + eps)</td><td><span class="pill hl">headline</span></td><td class="note">assessed vs a fixed VLA baseline; credited to prior work, not adopted as ours</td></tr></tbody></table>
+</section>
+
+<section>
+  <h2>3 &middot; Models <span class="h2sub">the frontier-brain roster; scores fill in as API keys arrive</span></h2>
+  <p class="lead">Contestants are swapped through one fixed executor + skill API. Wired today:
+     <code>gemini-er2</code> (vision) and <code>glm</code> / <code>kimi</code> / <code>qwen</code> /
+     <code>deepseek</code> (via one Fireworks key); the rest are stubs awaiting a key.</p>
+  <div class="caveat"><b>Vision-required toy.</b> The toy <code>state_text</code> no longer gives positions:
+     a red and a blue mug sit at left/right (side randomised per seed) and the brain may refer to a mug by
+     <i>side only</i> - so it must <b>read the image</b> to know which side is red. <code>gemini-er2</code>,
+     <code>kimi</code>, <code>qwen</code> see the image (<span class="pill open">image</span>);
+     <code>glm</code>, <code>deepseek</code> are text-blind here (<span class="pill">text</span>) and must
+     guess (~50%). The <b>transparent OOD wipes the colour cue</b> (both mugs go glassy) so even vision
+     brains must guess - the edge should <b>not survive</b> (negative dTSR); the <b>clutter OOD</b> keeps
+     colour but obstructs the approach (SPR drops, TSR holds). Still a tiny proxy on <b>n=6/split</b>, not
+     LIBERO - the real substrate makes pixels the <i>only</i> source of identity and pose.</div>
+  <table class="models"><thead><tr><th>brain</th><th>model id &middot; limitation</th><th>type</th><th>impl</th><th>key</th><th>sees</th><th>TSR<br>normal</th><th>TSR<br>OOD</th><th>dTSR</th><th>LHCR</th><th>RSR</th><th>SPR</th><th>WAS</th><th>n</th></tr></thead><tbody><tr><td class="abbr">gemini-er2</td><td class="idcell"><span class="mono small">gemini-robotics-er-2-preview</span><span class="limit">&#9888; preview model; robot-specialized; only exercised on the toy cartoon here</span></td><td><span class="pill closed">closed</span></td><td><span class="pill ok">wired</span></td><td><span class="pill ok">set</span></td><td><span class="pill open">image</span></td><td>100%</td><td>50%</td><td class="neg">-0.50</td><td>91%</td><td>100%</td><td>83%</td><td>-</td><td>12</td></tr><tr><td class="abbr">kimi</td><td class="idcell"><span class="mono small">accounts/fireworks/models/kimi-k3</span><span class="limit">&#9888; vision OK (Fireworks); reasoning-style, verbose think tokens</span></td><td><span class="pill open">open</span></td><td><span class="pill ok">wired</span></td><td><span class="pill ok">set</span></td><td><span class="pill open">image</span></td><td>100%</td><td>50%</td><td class="neg">-0.50</td><td>91%</td><td>100%</td><td>83%</td><td>-</td><td>12</td></tr><tr><td class="abbr">mock</td><td class="idcell"><span class="mono small">-</span><span class="limit">&#9888; offline scripted reference, not a real brain</span></td><td><span class="pill open">open</span></td><td><span class="pill ok">wired</span></td><td><span class="pill no">unset</span></td><td><span class="pill">-</span></td><td>100%</td><td>0%</td><td class="neg">-1.00</td><td>44%</td><td>100%</td><td>100%</td><td>-</td><td>90</td></tr><tr><td class="abbr">qwen</td><td class="idcell"><span class="mono small">accounts/fireworks/models/qwen3p8-max</span><span class="limit">&#9888; vision OK (Fireworks); large MoE, slower per step</span></td><td><span class="pill open">open</span></td><td><span class="pill ok">wired</span></td><td><span class="pill ok">set</span></td><td><span class="pill open">image</span></td><td>100%</td><td>0%</td><td class="neg">-1.00</td><td>80%</td><td>100%</td><td>83%</td><td>-</td><td>12</td></tr><tr><td class="abbr">deepseek</td><td class="idcell"><span class="mono small">accounts/fireworks/models/deepseek-v4-pro</span><span class="limit">&#9888; text-blind + prone to max-steps loops -&gt; must guess the side</span></td><td><span class="pill open">open</span></td><td><span class="pill ok">wired</span></td><td><span class="pill ok">set</span></td><td><span class="pill">text</span></td><td>50%</td><td>25%</td><td class="neg">-0.25</td><td>50%</td><td>100%</td><td>92%</td><td>-</td><td>12</td></tr><tr><td class="abbr">glm</td><td class="idcell"><span class="mono small">accounts/fireworks/models/glm-5p2</span><span class="limit">&#9888; text-blind on this Fireworks model -&gt; must guess the side</span></td><td><span class="pill open">open</span></td><td><span class="pill ok">wired</span></td><td><span class="pill ok">set</span></td><td><span class="pill">text</span></td><td>50%</td><td>0%</td><td class="neg">-0.50</td><td>50%</td><td>100%</td><td>100%</td><td>-</td><td>12</td></tr><tr><td class="abbr">claude</td><td class="idcell"><span class="mono small">claude-opus-4-8</span><span class="limit">&#9888; no ANTHROPIC_API_KEY in .env</span></td><td><span class="pill closed">closed</span></td><td><span class="pill no">stub</span></td><td><span class="pill no">unset</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr><tr><td class="abbr">cosmos-reason1</td><td class="idcell"><span class="mono small">nvidia/Cosmos-Reason1-7B</span><span class="limit">&#9888; open-weight VLM; GPU self-host only (no hosted API)</span></td><td><span class="pill open">open</span></td><td><span class="pill no">stub</span></td><td><span class="pill no">unset</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr><tr><td class="abbr">gemini</td><td class="idcell"><span class="mono small">gemini-2.5-pro</span><span class="limit">&#9888; vision-capable but _complete() not wired (stub)</span></td><td><span class="pill closed">closed</span></td><td><span class="pill no">stub</span></td><td><span class="pill ok">set</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr><tr><td class="abbr">gpt</td><td class="idcell"><span class="mono small">gpt-5</span><span class="limit">&#9888; key valid but account has 0 credits (429) - needs billing</span></td><td><span class="pill closed">closed</span></td><td><span class="pill no">stub</span></td><td><span class="pill ok">set</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr><tr><td class="abbr">llama</td><td class="idcell"><span class="mono small">llama-4</span><span class="limit">&#9888; not served on this Fireworks account (needs Together/Meta key)</span></td><td><span class="pill open">open</span></td><td><span class="pill no">stub</span></td><td><span class="pill no">unset</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr><tr><td class="abbr">robobrain2</td><td class="idcell"><span class="mono small">BAAI/RoboBrain2.0-7B</span><span class="limit">&#9888; open-weight; GPU self-host only (no hosted API)</span></td><td><span class="pill open">open</span></td><td><span class="pill no">stub</span></td><td><span class="pill ok">set</span></td><td><span class="pill">-</span></td><td colspan="8" class="pending">pending - supply API key, then run scripts/run_step2_tsr.sh</td></tr></tbody></table>
+  <div class="findings"><b>What this run shows (toy, n=4/split).</b> Vision brains (gemini-er2, kimi, qwen) averaged <b>100%</b> on normal vs text-blind brains (glm, deepseek) sat at <b>50%</b> (guessing the side) - so vision helps. Under the <b>transparent</b> OOD the colour cue is wiped: vision brains fell to <b>33%</b> (mean transparent-vs-normal = <b>-0.67</b>) while <b>clutter</b> (colour kept) held at <b>100%</b> - the edge did <b>not survive</b> the surprise.</div>
+  <p class="foot">Sources: roster from <code>rsbench.brains.registry</code>; scores from
+     <code>data/results/*.jsonl</code>; metrics from the ACTION-ATLAS proposal (p2 5.2-5.6).
+     Regenerate: <code>python docs/dashboard.py</code>.</p>
+</section>
+</body></html>

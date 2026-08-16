@@ -1,0 +1,10 @@
+# The FIXED skill / primitive API - the contract every brain plans through (step 3).
+# Keep in sync with src/rsbench/skills/api.py DEFAULT_SKILLS. Changing this changes the
+# executor for ALL contestants, so version it deliberately.
+skills:
+  move_to: [target]
+  pick: [object]
+  place: [target]
+  open: [object]
+  close: [object]
+  done: []

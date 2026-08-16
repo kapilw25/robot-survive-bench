@@ -1,0 +1,15 @@
+# Core (rsbench runs the mock loop with just these).
+pyyaml>=6
+
+# Dev
+pytest>=8
+ruff>=0.5
+
+# Optional provider SDKs - install the ones you actually call (step 3):
+# openai
+# anthropic
+# google-generativeai
+# together
+
+# Optional real substrate (step 1 real): LIBERO / lerobot
+# libero

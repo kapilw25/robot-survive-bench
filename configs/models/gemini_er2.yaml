@@ -1,0 +1,7 @@
+# Robot-specialized brain; the step-1 default anchor.
+name: gemini-er2
+model_id: gemini-robotics-er-2-preview
+env_key: GEMINI_API_KEY
+is_open_weight: false
+temperature: 0            # deterministic, per the fairness contract
+max_planning_calls: 20    # same budget for every contestant

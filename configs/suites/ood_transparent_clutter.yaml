@@ -1,0 +1,12 @@
+# OOD splits (step 4): observation-space only, so the frozen brain/policy stays zero-shot.
+modes:
+  transparent:
+    change: swap target objects to glass / steel / water (non-Lambertian) assets
+    source_perception_sets: [ClearGrasp, DREDS]
+    zero_shot: true
+  clutter:
+    change: add distractors / occlusion around the target (crammed drawer, retrieve-from-heap)
+    source_perception_sets: [GraspNet-1B, MetaGraspNet]
+    zero_shot: true
+headline_metric: dTSR = TSR(OOD) - TSR(normal)   # per model; baselines held fixed
+out_of_scope: [deformable, contact_rich, handover]  # change body/physics -> break zero-shot

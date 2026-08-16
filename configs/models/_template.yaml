@@ -1,0 +1,8 @@
+# Copy this to add a new contestant brain (also add a class in src/rsbench/brains/providers.py
+# and register it in src/rsbench/brains/registry.py).
+name: my-model
+model_id: vendor/my-model-id
+env_key: MY_API_KEY
+is_open_weight: true       # true feeds the "open-weight only" board
+temperature: 0
+max_planning_calls: 20

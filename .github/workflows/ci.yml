@@ -1,0 +1,27 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  release:
+    types: [published]   # step 5: on each model/release, refresh boards
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: unit + smoke tests
+        run: pytest -q
+      - name: mock end-to-end (build boards)
+        run: |
+          python -m rsbench.loop.runner --brain mock --suite mock --ood all --out data/results/ci.jsonl
+          python -m rsbench.leaderboard.build --results data/results/ci.jsonl --out boards
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leaderboards
+          path: boards/

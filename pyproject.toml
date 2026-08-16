@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsbench"
+version = "0.0.1"
+description = "robot-survive-bench: a live frontier-brain robotic-execution benchmark"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["pyyaml>=6"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+# provider SDKs (install what you use): pip install ".[providers]"
+providers = ["openai", "anthropic", "google-generativeai"]
+# libero = ["libero"]  # add on real-env integration
+
+[project.scripts]
+rsbench-run = "rsbench.loop.runner:main"
+rsbench-board = "rsbench.leaderboard.build:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+src = ["src", "tests"]

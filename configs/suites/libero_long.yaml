@@ -1,0 +1,10 @@
+# LIBERO-Long suite (step 1 real substrate).
+suite: libero_long
+source: lerobot/libero        # https://huggingface.co/datasets/lerobot/libero
+n_tasks: 10
+tasks: [libero_long_01, libero_long_02, libero_long_03, libero_long_04, libero_long_05,
+        libero_long_06, libero_long_07, libero_long_08, libero_long_09, libero_long_10]
+max_steps: 20
+notes: >
+  10 long-horizon tasks. Fill real task ids + asset paths on LIBERO integration
+  (src/rsbench/envs/libero_env.py). Success is the binary signal TSR reads.

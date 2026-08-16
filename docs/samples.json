@@ -1,0 +1,47 @@
+[
+  {
+    "suite": "LIBERO-Spatial",
+    "why": "same objects, new spatial arrangements",
+    "dataset": "lerobot/libero_spatial_image",
+    "episode": 0,
+    "task": "pick up the black bowl next to the cookie box and place it on the plate",
+    "file": "static/samples/1_spatial.png",
+    "gif": "static/samples/1_spatial.gif"
+  },
+  {
+    "suite": "LIBERO-Object",
+    "why": "same layout, unseen objects",
+    "dataset": "lerobot/libero_object_image",
+    "episode": 0,
+    "task": "pick up the orange juice and place it in the basket",
+    "file": "static/samples/2_object.png",
+    "gif": "static/samples/2_object.gif"
+  },
+  {
+    "suite": "LIBERO-Goal",
+    "why": "same objects, new goal/instruction",
+    "dataset": "lerobot/libero_goal_image",
+    "episode": 0,
+    "task": "put the bowl on the plate",
+    "file": "static/samples/3_goal.png",
+    "gif": "static/samples/3_goal.gif"
+  },
+  {
+    "suite": "LIBERO-Long",
+    "why": "long-horizon, multi-stage tasks",
+    "dataset": "lerobot/libero_10_image",
+    "episode": 0,
+    "task": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+    "file": "static/samples/4_long.png",
+    "gif": "static/samples/4_long.gif"
+  },
+  {
+    "suite": "LIBERO-Long",
+    "why": "a second, different long-horizon task",
+    "dataset": "lerobot/libero_10_image",
+    "episode": 1,
+    "task": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+    "file": "static/samples/5_long1.png",
+    "gif": "static/samples/5_long1.gif"
+  }
+]

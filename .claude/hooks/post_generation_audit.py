@@ -29,6 +29,32 @@ def is_deliverable(path):
             ("/deliverables/" in p and p.endswith(".pdf")))
 
 
+def is_working_doc(path):
+    # A produced working-doc markdown under plan/ or .claude/ (a published .tex is exempt).
+    if not path:
+        return False
+    p = os.path.abspath(path).replace("\\", "/")
+    return p.endswith(".md") and ("/plan/" in p or "/.claude/" in p)
+
+
+def count_md_tables(path):
+    """Count markdown tables in a file = number of table SEPARATOR (divider) rows.
+    A separator row is a stripped line made only of '|', ':', '-' and spaces that has at
+    least one '-' and at least one '|' (e.g. |---|---|, | :--: | --- |, ---|---). A
+    horizontal rule (---) or a YAML '---' fence has no '|' and is excluded. Each separator
+    row is exactly one table, so this count IS the number of tables in the file."""
+    try:
+        txt = open(path, encoding="utf-8", errors="ignore").read()
+    except Exception:
+        return 0
+    n = 0
+    for ln in txt.splitlines():
+        s = ln.strip()
+        if "-" in s and "|" in s and re.fullmatch(r"[\s:|-]+", s):
+            n += 1
+    return n
+
+
 def lint_colors(path):
     warns = []
     try:
@@ -52,6 +78,25 @@ def main():
     # generation event. NEVER parse Bash commands: an audit agent's own render/read commands
     # mention the deliverable path and would spuriously re-arm the gate after it audited.
     path = ti.get("file_path", "") or ""
+
+    # TABLE-SPRAWL cap (additive, independent of the deliverable flow below). A produced
+    # working-doc .md under plan/ or .claude/ must hold AT MOST 2 markdown tables; 3+ buries
+    # its key content and must be SPLIT into focused files. Counting needs the whole file,
+    # which the PreToolUse regex dispatcher cannot do (single-line match only, and on an Edit
+    # it sees only the fragment), so the count lives here where we read the file from disk.
+    if is_working_doc(path):
+        n = count_md_tables(path)
+        if n >= 3:
+            msg = ("TABLE-SPRAWL: " + os.path.basename(path) + " now has " + str(n) +
+                   " markdown tables (house rule caps each working-doc .md at 2). SPLIT it into "
+                   "focused files (one concept per file), each with at most 2 tables; at minimum "
+                   "add a top-of-file pointer to the single canonical table so the reader is not "
+                   "left hunting for it. See .claude/audit/table_sprawl.md and parity-auditor "
+                   "Procedure step 8.")
+            print(json.dumps({"hookSpecificOutput": {"hookEventName": "PostToolUse",
+                                                     "additionalContext": msg}}))
+        return 0
+
     if not path or not is_deliverable(path):
         return 0
     abspath = os.path.abspath(path)

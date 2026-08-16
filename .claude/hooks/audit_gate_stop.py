@@ -37,7 +37,12 @@ def load_ledger():
 
 
 def unaudited(rows):
-    """paths whose latest 'required' has no later 'audited'+CLEAN."""
+    """existing paths whose latest 'required' has no later 'audited'+CLEAN.
+
+    A 'required' entry for a file that no longer exists on disk (never created, deleted, or
+    renamed) is a phantom: it can never be rendered/viewed/audited, so it must NOT block the
+    gate. Such paths are skipped here so a stale ledger entry cannot hard-lock the session.
+    """
     req, ok = {}, {}
     for r in rows:
         p = r.get("path")
@@ -49,7 +54,7 @@ def unaudited(rows):
             req[p] = max(req.get(p, 0), s)
         elif e == "audited" and r.get("verdict") == "CLEAN":
             ok[p] = max(ok.get(p, 0), s)
-    return [p for p, rs in req.items() if ok.get(p, -1.0) < rs]
+    return [p for p, rs in req.items() if ok.get(p, -1.0) < rs and os.path.exists(p)]
 
 
 def rm(p):

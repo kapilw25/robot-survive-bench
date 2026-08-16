@@ -27,3 +27,25 @@ __pycache__/
 
 # Large media (regenerate locally)
 media/
+
+# rsbench: envs, caches, build artifacts
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# rsbench: transient run outputs (keep the dir stubs)
+data/raw/*
+data/ood/*
+data/results/*
+logs/*
+!**/.gitkeep
+
+# keep the env template (overrides the .env.* rule above)
+!.env.example
+
+# HF streaming cache (local, not committed)
+.hf_cache/
