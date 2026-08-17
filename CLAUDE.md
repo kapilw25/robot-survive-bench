@@ -14,10 +14,11 @@ Measurement / consolidation contribution: a NEW distribution, not a new protocol
 ## Repo layout
 | 🗂️ Path | 📌 What |
 |---|---|
-| `plan/v2/` | 📊 **CURRENT**: live frontier-brain board (`README.md` spec, `plan_PIVOT_live_frontier.md` deep dive) |
+| `plan/v3/tasks.md` | ✅ **START HERE**: the single task list (done + next), one bullet each |
+| `plan/v2/` | 📊 frontier-brain board spec (`README.md`) + gap scan (`novelty_map.md`) |
 | `plan/v1/` | 🤖 pre-pivot world-model reproduction (`README.md` spec) |
 | `plan/plan_dataset.md` · `plan/plan_rejections_risks.md` | 🔗 shared ref: 📦 dataset menu; 🩸 novelty / scoop ledger |
-| `plan/v0_proposal/` · `plan/legacy/` | 📄 original proposal + dashboard; 🗄️ retired full vision |
+| `plan/v0_proposal/` · `plan/legacy/` | 📄 original proposal; 🗄️ retired vision + v2 deep-dives (pivot, robobench, status, architecture) |
 
 ## Working conventions (follow these)
 - NO em-dashes anywhere (use hyphens, or rewrite the sentence).

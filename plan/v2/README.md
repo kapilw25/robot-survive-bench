@@ -15,7 +15,7 @@
 | 📤 Ship | pinned model IDs + seeds + datasheet + [Croissant](https://github.com/mlcommons/croissant) + "add your model in 1 PR" |
 | 🆕 Novelty gap | full 13-rival table -> [`novelty_map.md`](novelty_map.md); open niche = live x closed-loop EXECUTION x frontier-LLM brains x OOD-survival (dTSR); measurement infra, not a new metric |
 | 🛡️ The one rule | score = closed-loop task SUCCESS (TSR/dTSR), NEVER multiple-choice VQA - the line vs 📝 [ManipBench](https://arxiv.org/abs/2505.09698) |
-| 📎 Refs | deep dive [`plan_PIVOT_live_frontier.md`](plan_PIVOT_live_frontier.md) · shared [`../plan_dataset.md`](../plan_dataset.md) · [`../plan_rejections_risks.md`](../plan_rejections_risks.md) · pre-pivot [`../v1/`](../v1/README.md) |
+| 📎 Refs | deep dive [`plan_PIVOT_live_frontier.md`](../legacy/plan_PIVOT_live_frontier.md) · shared [`../plan_dataset.md`](../plan_dataset.md) · [`../plan_rejections_risks.md`](../plan_rejections_risks.md) · pre-pivot [`../v1/`](../v1/README.md) |
 
 ## 🚀 Build steps (max 5)
 | # | 🚀 Step | 📋 Detail |
